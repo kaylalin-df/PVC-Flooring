@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PVC 循環地板專利申請 — 主管簡報</title>
+<style>
+  :root {
+    --bg: #f1f5f9; --surface: #fff; --surface2: #f8fafc;
+    --border: #e2e8f0; --text: #1e293b; --text2: #475569; --text3: #94a3b8;
+    --pri: #2563eb; --pri-light: #dbeafe;
+    --ok: #16a34a; --ok-light: #dcfce7;
+    --warn: #d97706; --warn-light: #fef3c7;
+    --red: #dc2626; --red-light: #fee2e2;
+    --purple: #7c3aed; --purple-light: #ede9fe;
+    --teal: #0d9488; --teal-light: #ccfbf1;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Microsoft JhengHei","PingFang TC",-apple-system,sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+  .header { background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 60%, #7c3aed 100%); color: #fff; padding: 32px 40px 24px; }
+  .header h1 { font-size: 24px; font-weight: 800; }
+  .header .sub { font-size: 14px; opacity: .75; margin-top: 4px; }
+  .header-info { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 14px; }
+  .header-info span { font-size: 12px; background: rgba(255,255,255,.15); padding: 3px 12px; border-radius: 99px; }
+
+  .nav { position: sticky; top: 0; z-index: 100; background: #fff; border-bottom: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,.06); display: flex; overflow-x: auto; }
+  .nav a { padding: 11px 16px; font-size: 12px; font-weight: 600; color: var(--text3); text-decoration: none; white-space: nowrap; border-bottom: 2px solid transparent; cursor: pointer; transition: all .15s; }
+  .nav a:hover { color: var(--pri); }
+  .nav a.active { color: var(--pri); border-bottom-color: var(--pri); }
+
+  .page { max-width: 1100px; margin: 0 auto; padding: 24px 20px 80px; }
+  .section { margin-bottom: 32px; scroll-margin-top: 52px; }
+  .section-title { font-size: 17px; font-weight: 700; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 2px solid var(--pri); display: flex; align-items: center; gap: 8px; }
+  .section-title .ico { width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; flex-shrink: 0; }
+
+  .card { background: var(--surface); border-radius: var(--radius); box-shadow: 0 1px 3px rgba(0,0,0,.06); overflow: hidden; margin-bottom: 14px; border: 1px solid var(--border); }
+  .card-head { padding: 12px 18px; font-weight: 700; font-size: 14px; border-bottom: 1px solid var(--border); }
+  .card-body { padding: 18px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } .header { padding: 20px 16px; } .page { padding: 16px; } }
+
+  .alert { padding: 14px 18px; border-radius: 8px; margin-bottom: 14px; font-size: 13px; display: flex; gap: 10px; align-items: flex-start; }
+  .alert.green { background: var(--ok-light); border: 1px solid #86efac; }
+  .alert.blue { background: var(--pri-light); border: 1px solid #93c5fd; }
+  .alert.orange { background: var(--warn-light); border: 1px solid #fcd34d; }
+  .alert.red { background: var(--red-light); border: 1px solid #fca5a5; }
+  .alert.purple { background: var(--purple-light); border: 1px solid #c4b5fd; }
+  .alert .ic { font-size: 18px; flex-shrink: 0; }
+
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; }
+  .stat .label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; }
+  .stat .val { font-size: 20px; font-weight: 800; margin-top: 2px; }
+  .stat .note { font-size: 11px; color: var(--text3); margin-top: 4px; }
+  .stat.blue { border-left: 4px solid var(--pri); }
+  .stat.green { border-left: 4px solid var(--ok); }
+  .stat.orange { border-left: 4px solid var(--warn); }
+  .stat.red { border-left: 4px solid var(--red); }
+  .stat.purple { border-left: 4px solid var(--purple); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 700; color: var(--text2); border-bottom: 2px solid var(--border); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--bg); vertical-align: top; }
+  tr:hover td { background: var(--surface2); }
+
+  .tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
+  .tag.go { background: var(--ok-light); color: var(--ok); }
+  .tag.wait { background: var(--warn-light); color: var(--warn); }
+  .tag.no { background: var(--red-light); color: var(--red); }
+  .tag.info { background: var(--pri-light); color: var(--pri); }
+  .tag.best { background: var(--purple-light); color: var(--purple); }
+
+  .vs-table { border: 2px solid var(--pri); border-radius: 8px; overflow: hidden; }
+  .vs-table th { text-align: center; }
+  .vs-table td { text-align: center; }
+  .vs-table td:first-child { text-align: left; font-weight: 600; }
+  .vs-table .pick { background: var(--ok-light); }
+  .vs-table .pick td { color: var(--ok); }
+
+  .step-flow { display: flex; gap: 0; align-items: stretch; margin: 16px 0; overflow-x: auto; }
+  .step-item { flex: 1; min-width: 130px; text-align: center; position: relative; padding: 14px 10px; }
+  .step-num { width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+  .step-title { font-size: 13px; font-weight: 700; }
+  .step-desc { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .step-time { font-size: 11px; color: var(--pri); font-weight: 600; margin-top: 4px; }
+  .step-arrow { position: absolute; right: -12px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-left: 12px solid var(--border); z-index: 1; }
+  .step-item:last-child .step-arrow { display: none; }
+
+  .person-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-align: center; }
+  .person-card .role { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; }
+  .person-card .name { font-size: 15px; font-weight: 700; margin: 4px 0; }
+  .person-card .desc { font-size: 12px; color: var(--text2); }
+
+  .checklist { list-style: none; }
+  .checklist li { padding: 8px 0; border-bottom: 1px solid var(--bg); font-size: 13px; display: flex; gap: 8px; align-items: flex-start; }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist .box { width: 16px; height: 16px; border: 2px solid var(--border); border-radius: 3px; flex-shrink: 0; margin-top: 2px; }
+  .checklist .from { font-size: 11px; font-weight: 700; background: var(--surface2); padding: 1px 8px; border-radius: 4px; color: var(--text2); margin-left: auto; flex-shrink: 0; }
+
+  .gantt-simple { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .gantt-simple th { padding: 8px 6px; text-align: center; font-size: 11px; }
+  .gantt-simple th:first-child { text-align: left; min-width: 180px; }
+  .gantt-simple td { padding: 4px 3px; text-align: center; position: relative; height: 30px; }
+  .gantt-simple td:first-child { text-align: left; font-weight: 600; font-size: 12px; padding-left: 8px; }
+  .bar { position: absolute; top: 4px; bottom: 4px; left: 2px; right: 2px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; }
+
+  .money-box { background: var(--warn-light); border: 1px solid #fcd34d; border-radius: 8px; padding: 16px 20px; }
+  .money-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #fcd34d; font-size: 14px; }
+  .money-row:last-child { border-bottom: none; }
+  .money-row .lab { color: var(--text2); }
+  .money-row .val { font-weight: 700; }
+  .money-row.total { border-top: 2px solid #fbbf24; padding-top: 10px; margin-top: 6px; font-size: 16px; }
+
+  @media print {
+    .nav { display: none; }
+    .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .card { break-inside: avoid; }
+    .step-flow { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>PVC 循環再生地板 — 專利申請策略簡報</h1>
+  <div class="sub">給主管的決策參考：兩種專利比較、申請步驟、費用、時程、需要長虹提供的資料</div>
+  <div class="header-info">
+    <span><strong>報告人：</strong>PM（行銷部）</span>
+    <span><strong>日期：</strong>2026/04/02</span>
+    <span><strong>相關案例：</strong>CP38568 晶舟盒生態缸專利（大豐已取得）</span>
+  </div>
+</div>
+
+<nav class="nav">
+  <a class="active" onclick="go('tldr')">結論先講</a>
+  <a onclick="go('compare')">兩種專利比較</a>
+  <a onclick="go('recommend')">建議方案</a>
+  <a onclick="go('steps')">申請步驟</a>
+  <a onclick="go('contacts')">對接對象</a>
+  <a onclick="go('timeline')">時程表</a>
+  <a onclick="go('cost')">費用</a>
+  <a onclick="go('changhong')">長虹需提供資料</a>
+  <a onclick="go('risk')">風險提醒</a>
+</nav>
+
+<div class="page">
+
+<!-- ========== TLDR ========== -->
+<div class="section" id="tldr">
+  <div class="section-title"><span class="ico" style="background:var(--pri)">!</span> 結論先講（30 秒版）</div>
+
+  <div class="alert green">
+    <span class="ic">&#9989;</span>
+    <div>
+      <strong>建議：同時申請「發明專利」+「新型專利」，與長虹共同持有。</strong><br>
+      發明專利保護「怎麼把 PVC 廢料做成地板」的方法（保護 20 年，最強）。<br>
+      新型專利保護「配方的結構組成」（保護 10 年，幾個月就拿到，先擋著用）。<br>
+      兩個一起申請，總費用約 <strong>16-40 萬</strong>，事務所撰寫約 2 個月，審查約 1-3 年（發明）/ 3-6 個月（新型）。
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="stat blue">
+      <div class="label">建議申請數量</div>
+      <div class="val">2 件</div>
+      <div class="note">發明專利 1 件 + 新型專利 1 件</div>
+    </div>
+    <div class="stat orange">
+      <div class="label">預估總費用</div>
+      <div class="val">$16-40 萬</div>
+      <div class="note">含事務所撰寫費 + 官方規費</div>
+    </div>
+    <div class="stat purple">
+      <div class="label">先例</div>
+      <div class="val">CP38568</div>
+      <div class="note">大豐晶舟盒生態缸新型專利（已核准）</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== COMPARE ========== -->
+<div class="section" id="compare">
+  <div class="section-title"><span class="ico" style="background:#8b5cf6">2</span> 兩種專利有什麼不同？</div>
+
+  <div class="alert blue">
+    <span class="ic">&#128218;</span>
+    <div>
+      <strong>用最簡單的比喻：</strong><br>
+      「<strong>發明專利</strong>」像是保護你的「食譜 + 做菜方法」— 別人不能用你的方法做菜。保護最強、最久，但審查要 1-3 年。<br>
+      「<strong>新型專利</strong>」像是保護你的「菜的組成結構」— 別人不能做出一模一樣結構的菜。審查快（3-6 個月），但保護範圍比較窄。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">完整比較表</div>
+    <div class="card-body" style="padding:0;overflow-x:auto;">
+      <table class="vs-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;width:22%;">比較項目</th>
+            <th style="width:39%;">發明專利</th>
+            <th style="width:39%;">新型專利</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>白話解釋</td>
+            <td>保護「怎麼做」的<strong>方法</strong></td>
+            <td>保護「長什麼樣」的<strong>結構</strong></td>
+          </tr>
+          <tr>
+            <td>保護年限</td>
+            <td style="font-weight:700;color:var(--ok);font-size:18px;">20 年</td>
+            <td>10 年</td>
+          </tr>
+          <tr>
+            <td>審查方式</td>
+            <td>實質審查（審查官會仔細看）</td>
+            <td>形式審查（只看文件格式對不對）</td>
+          </tr>
+          <tr>
+            <td>拿到要多久</td>
+            <td style="color:var(--warn);">1-3 年</td>
+            <td style="color:var(--ok);">3-6 個月</td>
+          </tr>
+          <tr>
+            <td>保護強度</td>
+            <td style="font-weight:700;color:var(--ok);">最強 — 很難被推翻</td>
+            <td>較弱 — 比較容易被挑戰</td>
+          </tr>
+          <tr>
+            <td>能保護什麼</td>
+            <td>方法、製程、配方、用途 <strong>都可以</strong></td>
+            <td><strong>只能</strong>保護物品的形狀/結構/組合</td>
+          </tr>
+          <tr>
+            <td>我們的案子保護什麼</td>
+            <td>「怎麼把 PVC 廢料變成地板」的整套流程<br>（回收→破碎→混料→拉膜→壓合→回收循環）</td>
+            <td>「地板的配方組成」<br>（碳酸鈣 40% + PVC 60% 含回收料 + 矽晶圓）</td>
+          </tr>
+          <tr>
+            <td>事務所撰寫費</td>
+            <td>$8-20 萬/件</td>
+            <td>$5-12 萬/件</td>
+          </tr>
+          <tr>
+            <td>官方規費</td>
+            <td>$8,500（申請）+ $2,500/年（維護）</td>
+            <td>$3,000（申請）+ $2,500/年（維護）</td>
+          </tr>
+          <tr>
+            <td>大豐有沒有先例</td>
+            <td style="color:var(--warn);">沒有（第一次申請發明）</td>
+            <td style="color:var(--ok);">有 — CP38568 晶舟盒生態缸（已核准）</td>
+          </tr>
+          <tr class="pick">
+            <td><strong>建議</strong></td>
+            <td><span class="tag best">主力 — 一定要申請</span></td>
+            <td><span class="tag go">同時申請 — 先拿到保護</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="alert orange">
+    <span class="ic">&#128161;</span>
+    <div>
+      <strong>為什麼兩個都要申請？</strong><br>
+      發明專利審查要 1-3 年，在這段「空窗期」你沒有任何保護。如果競爭對手在這期間看到你的做法就照抄，你拿他沒辦法。<br>
+      新型專利 3-6 個月就拿到，可以<strong>先擋著用</strong>，等發明專利核准後再靠發明專利長期保護。<br>
+      這叫做「<strong>雙軌申請</strong>」，台灣專利法允許同一個發明同時申請發明和新型。
+    </div>
+  </div>
+</div>
+
+<!-- ========== RECOMMEND ========== -->
+<div class="section" id="recommend">
+  <div class="section-title"><span class="ico" style="background:var(--ok)">&#10003;</span> 建議方案：共同持有、雙軌申請</div>
+
+  <div class="card">
+    <div class="card-head" style="background:var(--ok-light);color:var(--ok);">建議申請的兩件專利</div>
+    <div class="card-body" style="padding:0;overflow-x:auto;">
+      <table>
+        <thead>
+          <tr><th style="width:8%;">編號</th><th style="width:15%;">類型</th><th>名稱（暫定）</th><th>保護什麼</th><th>持有方式</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag best">A</span></td>
+            <td><strong>發明專利</strong></td>
+            <td>一種利用半導體製程 PVC 廢料製造循環再生地板之方法</td>
+            <td>
+              <strong>完整製程：</strong><br>
+              收集廢料 → 破碎加工 → 按比例混入配方 → 拉膜製成膠布 → 壓合成地板 → 使用後回收 → 再次破碎循環<br><br>
+              <strong>配方參數：</strong><br>
+              碳酸鈣比例、PVC比例、回收料比例範圍、矽晶圓取代石英粉
+            </td>
+            <td>大豐 + 長虹<br><strong>共同持有</strong></td>
+          </tr>
+          <tr>
+            <td><span class="tag go">B</span></td>
+            <td><strong>新型專利</strong></td>
+            <td>一種含回收 PVC 廢料之循環再生地板結構</td>
+            <td>
+              <strong>地板的組成結構：</strong><br>
+              基材層（碳酸鈣+PVC+回收料）+ 印刷裝飾層 + 耐磨層<br>
+              各層的材質、厚度範圍、回收料含量
+            </td>
+            <td>大豐 + 長虹<br><strong>共同持有</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">「共同持有」要注意什麼？</div>
+    <div class="card-body">
+      <div class="alert orange" style="margin-bottom:12px;">
+        <span class="ic">&#9888;</span>
+        <div><strong>專利共有的法律規定（台灣專利法第 65 條）：</strong>共有人各自可以使用該專利，但如果要「授權給第三人使用」或「轉讓」，必須取得全體共有人的同意。</div>
+      </div>
+      <table>
+        <thead><tr><th style="width:30%;">要先談好的事</th><th>為什麼重要</th><th>建議</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>持分比例</strong></td>
+            <td>決定未來收到授權金時怎麼分</td>
+            <td>大豐 50% : 長虹 50%<br>（雙方貢獻不同但互補）</td>
+          </tr>
+          <tr>
+            <td><strong>各方的使用權</strong></td>
+            <td>長虹能不能自己用這個專利做別的產品？大豐能不能找其他工廠代工？</td>
+            <td>約定：雙方各自可使用，但不得授權第三方</td>
+          </tr>
+          <tr>
+            <td><strong>費用分攤</strong></td>
+            <td>申請費 + 每年維護費誰出？</td>
+            <td>申請費各半，年費各半</td>
+          </tr>
+          <tr>
+            <td><strong>合作結束後</strong></td>
+            <td>如果大豐跟長虹拆夥了，專利怎麼辦？</td>
+            <td>約定：共有關係繼續存在，但不得單方面授權第三人</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:12px;font-size:13px;color:var(--text2);padding:10px 14px;background:var(--surface2);border-radius:6px;">
+        <strong>這些內容要寫在一份「共同申請協議書」裡面</strong>，在送專利之前就要簽好。這份協議書可以請專利事務所一起幫忙擬。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== STEPS ========== -->
+<div class="section" id="steps">
+  <div class="section-title"><span class="ico" style="background:#06b6d4">4</span> 申請步驟（一步一步）</div>
+
+  <div class="step-flow">
+    <div class="step-item" style="background:var(--pri-light);border-radius:8px 0 0 8px;">
+      <div class="step-num" style="background:var(--pri);">1</div>
+      <div class="step-title">找專利事務所</div>
+      <div class="step-desc">建議找 CP38568 同一家</div>
+      <div class="step-time">第 1 週</div>
+      <div class="step-arrow"></div>
+    </div>
+    <div class="step-item" style="background:#e0f2fe;">
+      <div class="step-num" style="background:#0284c7;">2</div>
+      <div class="step-title">專利檢索</div>
+      <div class="step-desc">查有沒有人申請過類似的</div>
+      <div class="step-time">第 2-3 週</div>
+      <div class="step-arrow"></div>
+    </div>
+    <div class="step-item" style="background:var(--warn-light);">
+      <div class="step-num" style="background:var(--warn);">3</div>
+      <div class="step-title">準備技術資料</div>
+      <div class="step-desc">大豐 + 長虹各自提供</div>
+      <div class="step-time">第 2-4 週</div>
+      <div class="step-arrow"></div>
+    </div>
+    <div class="step-item" style="background:var(--purple-light);">
+      <div class="step-num" style="background:var(--purple);">4</div>
+      <div class="step-title">簽共同申請協議</div>
+      <div class="step-desc">大豐 + 長虹簽約</div>
+      <div class="step-time">第 4 週</div>
+      <div class="step-arrow"></div>
+    </div>
+    <div class="step-item" style="background:var(--ok-light);">
+      <div class="step-num" style="background:var(--ok);">5</div>
+      <div class="step-title">事務所撰寫</div>
+      <div class="step-desc">寫專利說明書 + Claims</div>
+      <div class="step-time">第 4-12 週</div>
+      <div class="step-arrow"></div>
+    </div>
+    <div class="step-item" style="background:var(--teal-light);">
+      <div class="step-num" style="background:var(--teal);">6</div>
+      <div class="step-title">送件</div>
+      <div class="step-desc">送到智慧財產局 TIPO</div>
+      <div class="step-time">第 12 週</div>
+      <div class="step-arrow"></div>
+    </div>
+    <div class="step-item" style="background:var(--red-light);border-radius:0 8px 8px 0;">
+      <div class="step-num" style="background:var(--red);">7</div>
+      <div class="step-title">審查 + 核准</div>
+      <div class="step-desc">新型 3-6 月 / 發明 1-3 年</div>
+      <div class="step-time">持續追蹤</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">每一步要做什麼（詳細版）</div>
+    <div class="card-body" style="padding:0;overflow-x:auto;">
+      <table>
+        <thead><tr><th>步驟</th><th>做什麼</th><th>誰負責</th><th>產出</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>1. 找事務所</strong></td>
+            <td>聯繫 CP38568（晶舟盒生態缸）案的同一間專利事務所，告訴他們：<br>「我們要申請 PVC 循環地板的發明+新型雙軌專利，跟長虹塑膠共同持有」</td>
+            <td>PM</td>
+            <td>事務所報價單</td>
+          </tr>
+          <tr>
+            <td><strong>2. 專利檢索</strong></td>
+            <td>事務所在全球專利資料庫裡搜尋，看有沒有人已經申請過<br>「用回收 PVC 廢料做地板」的類似專利。<br>如果有，要看我們的做法跟他們哪裡不一樣。</td>
+            <td>專利事務所</td>
+            <td>檢索報告<br>（有沒有障礙、建議策略）</td>
+          </tr>
+          <tr>
+            <td><strong>3. 準備技術資料</strong></td>
+            <td>把大豐和長虹各自的技術細節整理出來（詳見下方「長虹需提供資料」區塊）</td>
+            <td>PM 協調<br>大豐 + 長虹各自準備</td>
+            <td>技術資料包</td>
+          </tr>
+          <tr>
+            <td><strong>4. 簽協議</strong></td>
+            <td>大豐和長虹簽「共同申請協議書」，約定持分比例、使用權、費用分攤等</td>
+            <td>雙方法務</td>
+            <td>共同申請協議書（用印）</td>
+          </tr>
+          <tr>
+            <td><strong>5. 撰寫</strong></td>
+            <td>事務所把技術資料寫成法律文件（說明書 + Claims + 圖式）。<br>過程中會跟大豐/長虹來回確認技術細節。通常 2-3 次校稿。</td>
+            <td>專利事務所<br>（大豐/長虹配合校稿）</td>
+            <td>專利說明書定稿</td>
+          </tr>
+          <tr>
+            <td><strong>6. 送件</strong></td>
+            <td>事務所把文件送到經濟部智慧財產局（TIPO）。<br>送件後拿到「申請日」和「申請號」。<strong>從這天起你就有優先權了。</strong></td>
+            <td>專利事務所</td>
+            <td>申請日 + 申請號</td>
+          </tr>
+          <tr>
+            <td><strong>7. 審查</strong></td>
+            <td><strong>新型：</strong>形式審查，3-6 個月就核准。<br>
+            <strong>發明：</strong>實質審查，審查官可能會發「審查意見」（OA），事務所會幫你「答辯」（回覆解釋），可能來回 1-3 次。</td>
+            <td>專利事務所<br>（大豐/長虹配合提供補充說明）</td>
+            <td>專利證書</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CONTACTS ========== -->
+<div class="section" id="contacts">
+  <div class="section-title"><span class="ico" style="background:#ec4899">5</span> 會對接到的對象</div>
+
+  <div class="grid-3">
+    <div class="person-card" style="border-top:3px solid var(--pri);">
+      <div class="role">外部 — 核心</div>
+      <div class="name">專利事務所</div>
+      <div class="desc">
+        幫你寫說明書、送件、答辯<br>
+        <strong>找 CP38568 同一間</strong><br>
+        全程主要對口窗口<br>
+        <span style="font-size:11px;color:var(--text3);">費用：$13-32 萬（兩件）</span>
+      </div>
+    </div>
+    <div class="person-card" style="border-top:3px solid var(--purple);">
+      <div class="role">外部 — 政府</div>
+      <div class="name">智慧財產局（TIPO）</div>
+      <div class="desc">
+        審查並核發專利<br>
+        <strong>你不需要直接跟他們聯繫</strong><br>
+        事務所會代為處理所有文件<br>
+        <span style="font-size:11px;color:var(--text3);">官方規費：$11,500（兩件）</span>
+      </div>
+    </div>
+    <div class="person-card" style="border-top:3px solid var(--teal);">
+      <div class="role">外部 — 合作方</div>
+      <div class="name">長虹塑膠</div>
+      <div class="desc">
+        提供技術資料（配方、製程）<br>
+        指定「發明人」（想出做法的工程師）<br>
+        簽共同申請協議書<br>
+        <span style="font-size:11px;color:var(--text3);">對口：長虹技術負責人 + 法務</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:14px;">
+    <div class="person-card" style="border-top:3px solid var(--ok);">
+      <div class="role">內部</div>
+      <div class="name">大豐法務</div>
+      <div class="desc">審閱共同申請協議書<br>確認持分比例和使用權條款</div>
+    </div>
+    <div class="person-card" style="border-top:3px solid var(--warn);">
+      <div class="role">內部</div>
+      <div class="name">大豐回收/破碎部門</div>
+      <div class="desc">提供破碎加工的技術細節<br>（流程、設備、品質規格）</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== TIMELINE ========== -->
+<div class="section" id="timeline">
+  <div class="section-title"><span class="ico" style="background:var(--warn)">6</span> 時程表</div>
+
+  <div class="card">
+    <div class="card-head">從現在到拿到專利</div>
+    <div class="card-body" style="padding:0;overflow-x:auto;">
+      <table class="gantt-simple">
+        <thead>
+          <tr>
+            <th>工作項目</th>
+            <th>4月</th>
+            <th>5月</th>
+            <th>6月</th>
+            <th>7-9月</th>
+            <th>10-12月</th>
+            <th>2027</th>
+            <th>2028</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>聯繫事務所 + 取得報價</td>
+            <td style="position:relative;"><div class="bar" style="background:var(--pri);">1-2 週</div></td>
+            <td></td><td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td>專利檢索</td>
+            <td style="position:relative;"><div class="bar" style="background:#0284c7;">2 週</div></td>
+            <td></td><td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td>準備技術資料（大豐+長虹）</td>
+            <td style="position:relative;"><div class="bar" style="background:var(--warn);opacity:.7">準備</div></td>
+            <td style="position:relative;"><div class="bar" style="background:var(--warn);">完成</div></td>
+            <td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td>簽共同申請協議書</td>
+            <td></td>
+            <td style="position:relative;"><div class="bar" style="background:var(--purple);">簽約</div></td>
+            <td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td>事務所撰寫說明書</td>
+            <td></td>
+            <td style="position:relative;"><div class="bar" style="background:var(--ok);opacity:.6">撰寫</div></td>
+            <td style="position:relative;"><div class="bar" style="background:var(--ok);">校稿+定稿</div></td>
+            <td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td><strong>送件到 TIPO</strong></td>
+            <td></td><td></td>
+            <td style="position:relative;"><div class="bar" style="background:var(--red);">送件</div></td>
+            <td></td><td></td><td></td><td></td>
+          </tr>
+          <tr style="background:var(--ok-light);">
+            <td><strong>新型專利核准</strong></td>
+            <td></td><td></td><td></td>
+            <td style="position:relative;"><div class="bar" style="background:var(--ok);">核准</div></td>
+            <td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td>發明專利審查中</td>
+            <td></td><td></td><td></td>
+            <td style="position:relative;"><div class="bar" style="background:var(--text3);opacity:.5">審查</div></td>
+            <td style="position:relative;"><div class="bar" style="background:var(--text3);opacity:.5">審查</div></td>
+            <td style="position:relative;"><div class="bar" style="background:var(--text3);opacity:.5">審查+答辯</div></td>
+            <td></td>
+          </tr>
+          <tr style="background:var(--pri-light);">
+            <td><strong>發明專利核准（預估）</strong></td>
+            <td></td><td></td><td></td><td></td><td></td><td></td>
+            <td style="position:relative;"><div class="bar" style="background:var(--pri);">核准</div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="stat green">
+      <div class="label">新型專利（先拿到）</div>
+      <div class="val">2026 Q3-Q4</div>
+      <div class="note">送件後 3-6 個月核准，先有基本保護</div>
+    </div>
+    <div class="stat blue">
+      <div class="label">發明專利（主力保護）</div>
+      <div class="val">2027-2028</div>
+      <div class="note">送件後 1-3 年核准，保護 20 年</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== COST ========== -->
+<div class="section" id="cost">
+  <div class="section-title"><span class="ico" style="background:var(--warn)">7</span> 費用明細</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head">A. 發明專利</div>
+      <div class="card-body" style="padding:14px;">
+        <div class="money-box">
+          <div class="money-row"><span class="lab">事務所撰寫費</span><span class="val">$8-20 萬</span></div>
+          <div class="money-row"><span class="lab">專利檢索費</span><span class="val">$0-1 萬</span></div>
+          <div class="money-row"><span class="lab">官方申請規費</span><span class="val">$8,500</span></div>
+          <div class="money-row"><span class="lab">審查答辯費（若需要）</span><span class="val">$1-3 萬/次</span></div>
+          <div class="money-row total"><span class="lab">小計</span><span class="val">$10-25 萬</span></div>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--text3);">+ 核准後每年維護費 $2,500-16,000</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">B. 新型專利</div>
+      <div class="card-body" style="padding:14px;">
+        <div class="money-box">
+          <div class="money-row"><span class="lab">事務所撰寫費</span><span class="val">$5-12 萬</span></div>
+          <div class="money-row"><span class="lab">專利檢索費</span><span class="val">$0</span></div>
+          <div class="money-row"><span class="lab">官方申請規費</span><span class="val">$3,000</span></div>
+          <div class="money-row total"><span class="lab">小計</span><span class="val">$6-13 萬</span></div>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--text3);">+ 核准後每年維護費 $2,500-16,000<br>新型不需要答辯（形式審查）</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:0;">
+    <div class="card-head" style="background:var(--warn-light);color:var(--warn);">費用總覽</div>
+    <div class="card-body" style="padding:14px;">
+      <div class="money-box" style="background:#fff;border:2px solid #fbbf24;">
+        <div class="money-row"><span class="lab">發明專利（1 件）</span><span class="val">$10-25 萬</span></div>
+        <div class="money-row"><span class="lab">新型專利（1 件）</span><span class="val">$6-13 萬</span></div>
+        <div class="money-row"><span class="lab">共同申請協議書代擬</span><span class="val">$0-2 萬</span></div>
+        <div class="money-row total"><span class="lab"><strong>兩件合計</strong></span><span class="val" style="color:var(--red);font-size:22px;">$16-40 萬</span></div>
+      </div>
+      <div style="margin-top:10px;font-size:13px;color:var(--text2);">
+        <strong>如果跟長虹各半分攤 → 大豐負擔約 $8-20 萬</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CHANGHONG ========== -->
+<div class="section" id="changhong">
+  <div class="section-title"><span class="ico" style="background:var(--teal)">8</span> 需要向長虹索取的資料</div>
+
+  <div class="alert blue" style="margin-bottom:14px;">
+    <span class="ic">&#128203;</span>
+    <div><strong>這份清單可以直接發給長虹窗口</strong>，請他們準備。建議在下次會議時一次收齊。</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head" style="color:var(--teal);">長虹要提供的（技術資料）</div>
+      <div class="card-body">
+        <ul class="checklist">
+          <li><span class="box"></span><strong>完整配方比例</strong> — 碳酸鈣、PVC 樹脂、回收料、矽晶圓等各成分的精確比例（或範圍）<span class="from">長虹技術</span></li>
+          <li><span class="box"></span><strong>製造流程參數</strong> — 拉膜溫度、壓力、速度等關鍵製程參數<span class="from">長虹技術</span></li>
+          <li><span class="box"></span><strong>回收料的混入方式</strong> — 回收料在哪個步驟加入？怎麼加？加多少會影響品質？<span class="from">長虹技術</span></li>
+          <li><span class="box"></span><strong>矽晶圓（二氧化矽）的使用方式</strong> — 怎麼取代石英粉？比例？對流體性的影響？<span class="from">長虹技術</span></li>
+          <li><span class="box"></span><strong>黑底墊的規格</strong> — 材質、厚度、回收料含量、製造方式<span class="from">長虹技術</span></li>
+          <li><span class="box"></span><strong>成品測試數據</strong> — 含回收料的地板 vs 純新料地板的性能比較（耐磨、強度、色差等）<span class="from">長虹技術</span></li>
+          <li><span class="box"></span><strong>發明人資訊</strong> — 想出這個配方/做法的工程師姓名、身分證字號（專利文件需要）<span class="from">長虹人事</span></li>
+          <li><span class="box"></span><strong>長虹既有專利清單</strong> — 長虹目前有沒有已申請或已取得的相關專利？（避免衝突）<span class="from">長虹法務</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head" style="color:var(--pri);">大豐自己要準備的</div>
+      <div class="card-body">
+        <ul class="checklist">
+          <li><span class="box"></span><strong>PVC 廢料來源說明</strong> — 從哪些科技廠收集？什麼種類的 PVC 廢料？（手套、管材、包裝膜等）<span class="from">回收部門</span></li>
+          <li><span class="box"></span><strong>破碎加工流程</strong> — 用什麼設備？破碎到多細？有沒有分類步驟？雜質怎麼去除？<span class="from">回收部門</span></li>
+          <li><span class="box"></span><strong>回收料品質規格</strong> — 交給長虹的回收料有什麼品質標準？粒徑大小、雜質含量上限？<span class="from">回收部門</span></li>
+          <li><span class="box"></span><strong>回收量能數據</strong> — 每月可供應多少噸回收 PVC？來源穩定性？<span class="from">回收部門</span></li>
+          <li><span class="box"></span><strong>大豐端的發明人</strong> — 如果破碎/分類方法是大豐工程師想出來的，要提供姓名<span class="from">人事</span></li>
+          <li><span class="box"></span><strong>CP38568 案的事務所聯繫方式</strong> — 找同一家事務所<span class="from">PM</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== RISK ========== -->
+<div class="section" id="risk">
+  <div class="section-title"><span class="ico" style="background:var(--red)">9</span> 風險提醒</div>
+
+  <div class="card">
+    <div class="card-body" style="padding:0;overflow-x:auto;">
+      <table>
+        <thead><tr><th style="width:25%;">風險</th><th style="width:10%;">嚴重度</th><th>說明</th><th>怎麼避免</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>送件前洩露技術細節</strong></td>
+            <td><span class="tag no">高</span></td>
+            <td>如果配方、製程在專利申請日之前被公開（官網、展覽、新聞），專利會因為「喪失新穎性」被打回票</td>
+            <td>在拿到「申請日」之前：<br>- 不要在 DM/官網寫出具體比例<br>- 跟客戶說明技術時先簽 NDA<br>- 可以說「含回收料」但不說多少%</td>
+          </tr>
+          <tr>
+            <td><strong>檢索發現已有類似專利</strong></td>
+            <td><span class="tag wait">中</span></td>
+            <td>如果有人已經申請過「用回收 PVC 做地板」的專利，我們的申請可能被擋</td>
+            <td>這就是為什麼要先做專利檢索。如果有障礙，事務所會建議怎麼調整 Claims 的寫法來避開。</td>
+          </tr>
+          <tr>
+            <td><strong>共有專利未約定清楚</strong></td>
+            <td><span class="tag wait">中</span></td>
+            <td>沒簽協議書就送件，未來大豐跟長虹對專利的使用權有爭議</td>
+            <td>一定要在送件前簽好「共同申請協議書」</td>
+          </tr>
+          <tr>
+            <td><strong>長虹不願提供配方細節</strong></td>
+            <td><span class="tag wait">中</span></td>
+            <td>配方是長虹的核心機密，他們可能不願意完整揭露</td>
+            <td>跟長虹說明：專利說明書雖然會公開，但 Claims 可以寫「範圍」而不是精確數字（例如寫「5-30%」而不是「12.5%」），不會完全暴露商業機密</td>
+          </tr>
+          <tr>
+            <td><strong>忘記繳年費導致專利失效</strong></td>
+            <td><span class="tag go">低</span></td>
+            <td>核准後每年要繳維護費，不繳就自動失效</td>
+            <td>在共同申請協議書中約定誰負責繳費（或事務所代繳）</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="alert red">
+    <span class="ic">&#9888;</span>
+    <div>
+      <strong>最重要的一句話：在專利送件拿到「申請日」之前，絕對不要公開技術細節。</strong><br>
+      業務推廣可以說「我們有獨家的循環再製技術」，但不能說「我們用 40% 碳酸鈣加 60% PVC 其中 20% 是回收手套」。<br>
+      等拿到申請日之後就可以放心說了。
+    </div>
+  </div>
+</div>
+
+<!-- ========== DECISION SUMMARY ========== -->
+<div class="section" id="decision">
+  <div class="section-title"><span class="ico" style="background:var(--purple)">&#9733;</span> 需要主管決策</div>
+
+  <div class="card">
+    <div class="card-body" style="padding:0;overflow-x:auto;">
+      <table>
+        <thead><tr><th style="width:5%;">#</th><th style="width:25%;">決策項目</th><th>選項</th><th style="width:20%;">PM 建議</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><strong>是否啟動專利申請？</strong></td>
+            <td>A. 立即啟動（本月聯繫事務所）<br>B. 等合作合約簽完再啟動<br>C. 暫不申請</td>
+            <td><span class="tag best">建議 A</span><br>越早送件越好，保護優先權</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><strong>申請幾件？</strong></td>
+            <td>A. 發明 + 新型 雙軌（$16-40 萬）<br>B. 只申請發明（$10-25 萬）<br>C. 只申請新型（$6-13 萬）</td>
+            <td><span class="tag best">建議 A</span><br>雙軌最安全</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><strong>費用怎麼分攤？</strong></td>
+            <td>A. 大豐全額負擔<br>B. 大豐 + 長虹各半<br>C. 跟長虹談其他比例</td>
+            <td><span class="tag go">建議 B</span><br>共同持有就共同出錢</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><strong>持分比例？</strong></td>
+            <td>A. 大豐 50% : 長虹 50%<br>B. 其他比例（需討論）</td>
+            <td><span class="tag go">建議 A</span><br>雙方貢獻互補</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function go(id){ document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'}); }
+const secs = document.querySelectorAll('.section[id]');
+const links = document.querySelectorAll('.nav a');
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ links.forEach(l=>l.classList.remove('active')); const a=document.querySelector(`.nav a[onclick="go('${e.target.id}')"]`); if(a)a.classList.add('active'); }});
+},{rootMargin:'-60px 0px -70% 0px'});
+secs.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大豐 x 長虹 260318 會議紀錄 Dashboard</title>
+<style>
+  :root {
+    --bg: #f1f5f9; --surface: #fff; --surface2: #f8fafc;
+    --border: #e2e8f0; --text: #1e293b; --text2: #475569; --text3: #94a3b8;
+    --pri: #2563eb; --pri2: #1d4ed8; --pri-light: #dbeafe;
+    --ok: #16a34a; --ok-light: #dcfce7;
+    --warn: #d97706; --warn-light: #fef3c7;
+    --red: #dc2626; --red-light: #fee2e2;
+    --purple: #7c3aed; --purple-light: #ede9fe;
+    --teal: #0d9488; --teal-light: #ccfbf1;
+    --pink: #db2777; --pink-light: #fce7f3;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Microsoft JhengHei","PingFang TC",-apple-system,sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 60%, #7c3aed 100%); color: #fff; padding: 28px 40px 22px; }
+  .header h1 { font-size: 22px; font-weight: 800; }
+  .header .sub { font-size: 13px; opacity: .75; margin-top: 4px; }
+  .header-info { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 14px; }
+  .header-info span { font-size: 12px; background: rgba(255,255,255,.15); padding: 3px 12px; border-radius: 99px; }
+
+  /* Nav */
+  .nav { position: sticky; top: 0; z-index: 100; background: #fff; border-bottom: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,.06); display: flex; overflow-x: auto; }
+  .nav a { padding: 11px 16px; font-size: 12px; font-weight: 600; color: var(--text3); text-decoration: none; white-space: nowrap; border-bottom: 2px solid transparent; cursor: pointer; transition: all .15s; }
+  .nav a:hover { color: var(--pri); }
+  .nav a.active { color: var(--pri); border-bottom-color: var(--pri); }
+
+  .page { max-width: 1200px; margin: 0 auto; padding: 24px 20px 80px; }
+  .section { margin-bottom: 28px; scroll-margin-top: 52px; }
+  .section-title { font-size: 17px; font-weight: 700; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 2px solid var(--pri); display: flex; align-items: center; gap: 8px; }
+  .section-title .ico { width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; flex-shrink: 0; }
+
+  .card { background: var(--surface); border-radius: var(--radius); box-shadow: 0 1px 3px rgba(0,0,0,.06); overflow: hidden; margin-bottom: 14px; border: 1px solid var(--border); }
+  .card-head { padding: 12px 18px; font-weight: 700; font-size: 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+  .card-body { padding: 18px; }
+
+  /* Grid */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } .header { padding: 20px 16px; } .page { padding: 16px; } }
+
+  /* Alert */
+  .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 12px; font-size: 13px; display: flex; gap: 10px; align-items: flex-start; }
+  .alert.red { background: var(--red-light); border: 1px solid #fca5a5; }
+  .alert.green { background: var(--ok-light); border: 1px solid #86efac; }
+  .alert.blue { background: var(--pri-light); border: 1px solid #93c5fd; }
+  .alert.orange { background: var(--warn-light); border: 1px solid #fcd34d; }
+  .alert.purple { background: var(--purple-light); border: 1px solid #c4b5fd; }
+  .alert .ic { font-size: 18px; flex-shrink: 0; }
+  .alert strong { font-weight: 700; }
+
+  /* QA Row */
+  .qa { border-bottom: 1px solid var(--bg); padding: 10px 0; }
+  .qa:last-child { border-bottom: none; }
+  .qa-q { font-size: 13px; font-weight: 700; color: var(--text); display: flex; align-items: flex-start; gap: 8px; }
+  .qa-q .tag { font-size: 10px; padding: 1px 7px; border-radius: 99px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+  .tag.confirmed { background: var(--ok-light); color: var(--ok); }
+  .tag.partial { background: var(--warn-light); color: var(--warn); }
+  .tag.missing { background: var(--red-light); color: var(--red); }
+  .tag.new-idea { background: var(--purple-light); color: var(--purple); }
+  .qa-a { font-size: 13px; color: var(--text2); margin-top: 4px; padding-left: 0; }
+  .qa-a strong { color: var(--text); }
+
+  /* Stat cards */
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+  .stat .label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; }
+  .stat .val { font-size: 22px; font-weight: 800; margin-top: 2px; }
+  .stat .note { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .stat.blue { border-left: 4px solid var(--pri); }
+  .stat.green { border-left: 4px solid var(--ok); }
+  .stat.orange { border-left: 4px solid var(--warn); }
+  .stat.red { border-left: 4px solid var(--red); }
+  .stat.purple { border-left: 4px solid var(--purple); }
+  .stat.teal { border-left: 4px solid var(--teal); }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: var(--surface2); padding: 8px 12px; text-align: left; font-size: 12px; font-weight: 700; color: var(--text2); border-bottom: 2px solid var(--border); }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--bg); vertical-align: top; }
+  tr:hover td { background: var(--surface2); }
+
+  /* Todo */
+  .todo { display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--bg); font-size: 13px; align-items: flex-start; }
+  .todo:last-child { border-bottom: none; }
+  .todo .box { width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 4px; flex-shrink: 0; margin-top: 1px; }
+  .todo .owner { font-size: 11px; font-weight: 700; background: var(--surface2); padding: 1px 8px; border-radius: 4px; color: var(--text2); margin-left: auto; flex-shrink: 0; white-space: nowrap; }
+
+  /* Price box */
+  .price-box { background: var(--warn-light); border: 1px solid #fcd34d; border-radius: 8px; padding: 14px 18px; }
+  .price-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
+  .price-row .lab { font-size: 13px; color: var(--text2); }
+  .price-row .val { font-weight: 700; font-size: 17px; }
+  .price-row.total { border-top: 2px solid #fcd34d; padding-top: 8px; margin-top: 4px; }
+
+  /* Gap indicator */
+  .gap-card { border-left: 4px solid var(--red); }
+  .gap-card .card-head { background: var(--red-light); color: var(--red); }
+
+  @media print {
+    .nav { display: none; }
+    .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>大豐 x 長虹 ｜ PVC 循環再生地板合作會議</h1>
+  <div class="sub">會議紀錄 Dashboard — 一頁看完所有討論結果與待辦</div>
+  <div class="header-info">
+    <span><strong>日期：</strong>2026/03/18（二）下午</span>
+    <span><strong>出席：</strong>大豐（主管 + 業務部南二）/ 長虹窗口</span>
+    <span><strong>製作：</strong>2026/03/31</span>
+    <span><strong>狀態：</strong>5 大議題已討論，9 項關鍵缺口待追蹤</span>
+  </div>
+</div>
+
+<nav class="nav" id="nav">
+  <a class="active" onclick="go('overview')">總覽</a>
+  <a onclick="go('t1')">通路策略</a>
+  <a onclick="go('t2')">價格結構</a>
+  <a onclick="go('t3')">產品技術</a>
+  <a onclick="go('t4')">工法創新</a>
+  <a onclick="go('t5')">認證策略</a>
+  <a onclick="go('gaps')">未討論缺口</a>
+  <a onclick="go('actions')">待辦追蹤</a>
+  <a onclick="go('decisions')">決策建議</a>
+</nav>
+
+<div class="page">
+
+<!-- ========== OVERVIEW ========== -->
+<div class="section" id="overview">
+  <div class="section-title"><span class="ico" style="background:var(--pri)">0</span> 會議總覽</div>
+
+  <div class="grid-3" style="margin-bottom: 14px;">
+    <div class="stat green">
+      <div class="label">核心競爭力</div>
+      <div class="val" style="font-size:15px;color:var(--ok);">零甲醛拆裝工法</div>
+      <div class="note">不是「再生地板」，而是「廢棄物解決方案」</div>
+    </div>
+    <div class="stat red">
+      <div class="label">最大風險</div>
+      <div class="val" style="font-size:15px;color:var(--red);">綠建材標章確認失敗</div>
+      <div class="note">TABC 已禁 PVC，改走 RCS/GRS + 無甲醛切角</div>
+    </div>
+    <div class="stat purple">
+      <div class="label">最大機會</div>
+      <div class="val" style="font-size:15px;color:var(--purple);">租賃模式</div>
+      <div class="note">抵稅 + 恢復原狀 + 示範點（羅技/VOGUE）</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head" style="background:var(--ok-light);color:var(--ok);">已確認事項</div>
+      <div class="card-body" style="font-size:13px;">
+        <ul style="padding-left:18px;color:var(--text2);">
+          <li>大豐定位為<strong>「總經銷」</strong>，目標爭取全台獨家</li>
+          <li>採購價<strong>牌價七五折</strong></li>
+          <li>建議報價 <strong>$3,500-3,800/坪</strong>（連工帶料），議價空間 10-15%</li>
+          <li>日產能 <strong>2,400 坪</strong>，接單生產</li>
+          <li>超過 1,200 坪價格另議</li>
+          <li>付款方式：首次交易後轉<strong>月結</strong></li>
+          <li>產品組成：40% 碳酸鈣 + 60% PVC（含 5-10% 回收料，目標 20%）</li>
+          <li>黑底墊工法 = <strong>零甲醛 + 不傷底材 + 租賃可行</strong></li>
+          <li>PVC <strong>不能申請綠建材標章</strong>（TABC 已禁）</li>
+          <li>RCS 現況即可申請（再生料 &ge; 5%）</li>
+          <li>MOBIUS QR Code 生產履歷系統確認導入</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head" style="background:var(--warn-light);color:var(--warn);">尚未確認 / 需追蹤</div>
+      <div class="card-body" style="font-size:13px;">
+        <ul style="padding-left:18px;color:var(--text2);">
+          <li>長虹既有直客清單（含「清風」）<strong>尚未提供</strong></li>
+          <li>完整牌價表 <strong>尚未取得</strong></li>
+          <li>SGS 報告 <strong>尚未取得</strong></li>
+          <li>大寮廠參訪時間 <strong>尚未約定</strong></li>
+          <li>專利共同申請的具體範圍、歸屬 <strong>未敲定</strong></li>
+          <li>合約年限、最低銷售量承諾 <strong>未談</strong></li>
+          <li>產品詳細規格（厚度/防火/止滑/ESD）<strong>未談</strong></li>
+          <li>漲價機制 <strong>未談</strong></li>
+          <li>施工保固年限 <strong>未談</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== T1: 通路策略 ========== -->
+<div class="section" id="t1">
+  <div class="section-title"><span class="ico" style="background:#3b82f6">1</span> 合作定位與通路策略</div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="qa">
+        <div class="qa-q"><span class="tag confirmed">已確認</span> 大豐的角色定位？</div>
+        <div class="qa-a">定位為<strong>「總經銷」</strong>，目標爭取全台獨家權限。<br>不是純賣產品，而是為半導體廠提供<strong>「廢棄物解決方案」</strong>（含 PVC 手套、碎料、矽晶圓去化）。</div>
+      </div>
+      <div class="qa">
+        <div class="qa-q"><span class="tag partial">部分確認</span> 既有客戶怎麼處理？</div>
+        <div class="qa-a">長虹目前與科技廠<strong>「清風」</strong>有合作（矽晶圓回收）。<br>結論：長虹需先<strong>列出既有直客清單</strong>以排除或分潤。<span style="color:var(--red);font-weight:700;">（尚未收到）</span></div>
+      </div>
+      <div class="qa">
+        <div class="qa-q"><span class="tag confirmed">已確認</span> 合約如何推進？</div>
+        <div class="qa-a"><strong>大豐先提供制式合約</strong>，由長虹法務針對年限、續約條件、最低銷售承諾進行修正。</div>
+      </div>
+      <div class="qa">
+        <div class="qa-q"><span class="tag confirmed">已確認</span> 鎖定的目標通路？</div>
+        <div class="qa-a">
+          <table style="margin-top:6px;">
+            <tr><th>通路</th><th>說明</th></tr>
+            <tr><td><strong>電信三雄門市</strong></td><td>中華電信、遠傳、台哥大 — 3-5 年更換週期</td></tr>
+            <tr><td><strong>大同 3C</strong></td><td>零售門市通路</td></tr>
+            <tr><td><strong>百貨專櫃</strong></td><td>高流量裝潢更換需求</td></tr>
+            <tr><td><strong>半導體廠</strong></td><td>廢棄物解決方案（非單純地板採購）</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="qa">
+        <div class="qa-q"><span class="tag confirmed">已確認</span> 專利布局？</div>
+        <div class="qa-a">針對<strong>「配方、製程、回收應用」</strong>共同申請專利，提升行銷價值與競爭門檻。<br><span style="color:var(--warn);">具體範圍、歸屬、費用分攤尚未敲定。</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== T2: 價格結構 ========== -->
+<div class="section" id="t2">
+  <div class="section-title"><span class="ico" style="background:#8b5cf6">2</span> 價格與商務條件</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head">報價結構（連工帶料）</div>
+      <div class="card-body" style="padding:14px;">
+        <div class="price-box">
+          <div class="price-row"><span class="lab">材料成本（牌價 75 折）</span><span class="val">$2,600<span style="font-size:12px;color:var(--text2)">/坪</span></span></div>
+          <div class="price-row"><span class="lab">施工費</span><span class="val">$600-650<span style="font-size:12px;color:var(--text2)">/坪</span></span></div>
+          <div class="price-row total"><span class="lab">建議對外報價</span><span class="val" style="color:var(--red)">$3,500-3,800<span style="font-size:12px">/坪</span></span></div>
+          <div class="price-row"><span class="lab">議價空間</span><span class="val" style="font-size:14px">10-15%</span></div>
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:var(--text3);">
+          <strong>競品參考：</strong>中國進口含工帶料約 $2,000/坪 以內<br>
+          <strong>區隔策略：</strong>強調台灣製造 + ESG 循環價值
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">採購與產能</div>
+      <div class="card-body">
+        <div class="qa">
+          <div class="qa-q"><span class="tag confirmed">已確認</span> 採購折扣</div>
+          <div class="qa-a">牌價 <strong>75 折</strong></div>
+        </div>
+        <div class="qa">
+          <div class="qa-q"><span class="tag confirmed">已確認</span> 日產能</div>
+          <div class="qa-a"><strong>2,400 坪/天</strong></div>
+        </div>
+        <div class="qa">
+          <div class="qa-q"><span class="tag confirmed">已確認</span> 大量折扣</div>
+          <div class="qa-a">單筆 &gt; <strong>1,200 坪</strong>（約半天產能）價格另議<br>無需換料停機，成本更低</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q"><span class="tag confirmed">已確認</span> 付款方式</div>
+          <div class="qa-a">首次交易後轉為<strong>月結</strong></div>
+        </div>
+        <div class="qa">
+          <div class="qa-q"><span class="tag missing">未討論</span> 漲價機制</div>
+          <div class="qa-a" style="color:var(--red);">原料波動時的調價規則完全未談。下次需追蹤。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== T3: 產品技術 ========== -->
+<div class="section" id="t3">
+  <div class="section-title"><span class="ico" style="background:#06b6d4">3</span> 產品技術規格與回收占比</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head">材質配方</div>
+      <div class="card-body" style="padding:0;">
+        <table>
+          <tr><th>成分</th><th>比例</th><th>說明</th></tr>
+          <tr><td><strong>碳酸鈣（石粉）</strong></td><td style="font-size:18px;font-weight:700;">40%</td><td>填充料</td></tr>
+          <tr><td><strong>PVC 樹脂</strong></td><td style="font-size:18px;font-weight:700;">60%</td><td>主要成分</td></tr>
+          <tr style="background:var(--ok-light);">
+            <td>&nbsp;&nbsp;↳ 回收手套</td>
+            <td style="font-weight:700;">現 5-10%<br><span style="font-size:11px;color:var(--ok)">目標 20%</span></td>
+            <td>回收 PVC 手套</td>
+          </tr>
+          <tr style="background:var(--pri-light);">
+            <td>&nbsp;&nbsp;↳ 矽晶圓（二氧化矽）</td>
+            <td style="font-weight:700;">取代石英粉</td>
+            <td>抗菌、流體性更佳</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">功能加值亮點</div>
+      <div class="card-body">
+        <div class="qa">
+          <div class="qa-q"><span class="tag confirmed">已確認</span> 二氧化矽加值</div>
+          <div class="qa-a">具<strong>抗菌性</strong>與更佳的流體性（取代傳統石英粉）</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q"><span class="tag confirmed">已確認</span> 遠紅外線</div>
+          <div class="qa-a">送測確認具備效果，可用於行銷話題<br><strong style="color:var(--red);">不可宣稱療效</strong></div>
+        </div>
+        <div class="qa">
+          <div class="qa-q"><span class="tag confirmed">已確認</span> 生產履歷</div>
+          <div class="qa-a">每塊地板印製 <strong>MOBIUS QR Code</strong>，落實溯源管理</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q"><span class="tag missing">未討論</span> 詳細規格</div>
+          <div class="qa-a" style="color:var(--red);">厚度、耐磨層、防火等級、止滑係數、ESD 版本 — 全部未談</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert blue">
+    <span class="ic">&#128300;</span>
+    <div><strong>認證對照：</strong>回收料目前 5-10% → RCS(&ge;5%) 已達標可立即申請。目標提升到 20% 後申請 GRS。矽晶圓（二氧化矽）可作為 RCS 的來料計算。</div>
+  </div>
+</div>
+
+<!-- ========== T4: 工法創新 ========== -->
+<div class="section" id="t4">
+  <div class="section-title"><span class="ico" style="background:#10b981">4</span> 核心工法創新：零甲醛租賃模式</div>
+
+  <div class="alert green" style="margin-bottom: 14px;">
+    <span class="ic">&#11088;</span>
+    <div><strong>這是本次會議確立的核心競爭力</strong> — 不是「再生地板」，而是「零甲醛拆裝系統」+ 租賃商業模式</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head" style="background:var(--ok-light);color:var(--ok);">零甲醛工法 vs 傳統</div>
+      <div class="card-body" style="padding:0;">
+        <table>
+          <tr><th style="width:30%;">項目</th><th>傳統工法</th><th style="background:var(--ok-light);">大豐工法</th></tr>
+          <tr><td>底材處理</td><td>直接黏貼原地面</td><td style="background:var(--ok-light);"><strong>鋪 1.5mm 自產黑色 PVC 底墊</strong></td></tr>
+          <tr><td>膠水</td><td>強力膠 / 環氧樹脂</td><td style="background:var(--ok-light);"><strong>水性感壓膠</strong></td></tr>
+          <tr><td>拆除</td><td>除膠 $2,000/坪 + 甲醛溶劑</td><td style="background:var(--ok-light);"><strong>直接拉起，零甲醛</strong></td></tr>
+          <tr><td>原地面</td><td>會傷害磁磚</td><td style="background:var(--ok-light);"><strong>完全不傷底材</strong></td></tr>
+          <tr><td>ESG</td><td>甲醛作業 / 職安問題</td><td style="background:var(--ok-light);"><strong>零甲醛 = 職場健康</strong></td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head" style="background:var(--purple-light);color:var(--purple);">租賃模式（最大商機）</div>
+      <div class="card-body">
+        <div style="margin-bottom:10px;padding:6px 12px;background:#fff3f3;border:1px solid #e8a0a0;border-radius:4px;font-size:12px;color:#8a2200;">
+          <strong>&#9888; 注意（2026/04 查證）：</strong>經查目前無政府租金補助可供企業客戶申請。以下賣點中「費用化抵稅」為一般租賃費用列營業費用之稅務處理，非循環經濟特殊優惠，行銷時請勿誤導為政府補助。
+        </div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:10px;">四大賣點：</div>
+        <table>
+          <tr><td style="width:30px;font-size:18px;text-align:center;font-weight:700;">1</td><td><strong>費用化抵稅</strong> — 租金列營業費用</td></tr>
+          <tr><td style="font-size:18px;text-align:center;font-weight:700;">2</td><td><strong>恢復原狀</strong> — 零甲醛拆除，退租無壓力</td></tr>
+          <tr><td style="font-size:18px;text-align:center;font-weight:700;">3</td><td><strong>形象差異化</strong> — ESG + CSR 職場健康</td></tr>
+          <tr><td style="font-size:18px;text-align:center;font-weight:700;">4</td><td><strong>示範效應</strong> — 建立旗艦案場</td></tr>
+        </table>
+        <div style="margin-top:12px;padding:10px 14px;background:var(--surface2);border-radius:6px;font-size:12px;color:var(--text2);">
+          <strong>建議策略：</strong><br>
+          &bull; 前 3-6 個月免費（僅收工錢）<br>
+          &bull; 示範點：<strong>羅技 (Logitech)</strong> 或 <strong>VOGUE</strong> 辦公室<br>
+          &bull; 三年後免費送 or 舊換新僅付拆除費
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== T5: 認證策略 ========== -->
+<div class="section" id="t5">
+  <div class="section-title"><span class="ico" style="background:#f59e0b">5</span> 認證卡點與風險管控</div>
+
+  <div class="alert red" style="margin-bottom: 14px;">
+    <span class="ic">&#9888;</span>
+    <div><strong>綠建材標章：確認 PVC 產品無法申請。</strong>TABC 已禁止 PVC 成分。此路線正式宣告失敗，不以此為銷售點。</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">認證路徑（修訂版）</div>
+    <div class="card-body" style="padding:0;">
+      <table>
+        <thead>
+          <tr><th>認證</th><th>狀態</th><th>門檻</th><th>目前可行性</th><th>策略</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>MIT 微笑標章</strong></td>
+            <td><span class="tag confirmed" style="display:inline-block;">可申請</span></td>
+            <td>台灣製造</td>
+            <td style="color:var(--ok);font-weight:700;">門檻最低</td>
+            <td>優先申請</td>
+          </tr>
+          <tr>
+            <td><strong>RCS 回收聲明標準</strong></td>
+            <td><span class="tag confirmed" style="display:inline-block;">可申請</span></td>
+            <td>再生料 &ge; 5%</td>
+            <td style="color:var(--ok);font-weight:700;">現況即可開立</td>
+            <td>立即啟動</td>
+          </tr>
+          <tr>
+            <td><strong>GRS 全球回收標準</strong></td>
+            <td><span class="tag partial" style="display:inline-block;">需提升</span></td>
+            <td>再生料 &ge; 20%</td>
+            <td style="color:var(--warn);font-weight:700;">目前 5-10%，需累積量體</td>
+            <td>提升回收手套比例後申請</td>
+          </tr>
+          <tr>
+            <td><strong>環境部循環產品</strong></td>
+            <td><span class="tag partial" style="display:inline-block;">待查</span></td>
+            <td>再造產品</td>
+            <td style="color:var(--warn);">需確認申請條件</td>
+            <td>可與綠建材標章進行價值對標</td>
+          </tr>
+          <tr style="background:var(--red-light);">
+            <td><del><strong>綠建材標章</strong></del></td>
+            <td><span class="tag missing" style="display:inline-block;">不可申請</span></td>
+            <td colspan="3">TABC 已禁止 PVC 成分申請（2021/9/2 公告）</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="alert blue">
+    <span class="ic">&#128161;</span>
+    <div><strong>行銷切角調整：</strong>不再打「綠建材」牌。改用<strong>「RCS/GRS 國際認證 + 零甲醛職場健康 + 回收料比例 XX%」</strong>作為業務推廣切入點。</div>
+  </div>
+</div>
+
+<!-- ========== GAPS ========== -->
+<div class="section" id="gaps">
+  <div class="section-title"><span class="ico" style="background:var(--red)">!</span> 重要但未討論的缺口</div>
+
+  <p style="font-size:13px;color:var(--text2);margin-bottom:14px;">以下是對合作推進至關重要、但在本次會議中<strong>完全未觸及或僅片面提及</strong>的項目：</p>
+
+  <div class="grid-2">
+    <div class="card gap-card">
+      <div class="card-head">合約 &amp; 商務</div>
+      <div class="card-body" style="font-size:13px;">
+        <div class="qa">
+          <div class="qa-q"><span class="tag missing">未談</span> 合約年限與續約條件</div>
+          <div class="qa-a">幾年一約？續約要滿足什麼條件？</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q"><span class="tag missing">未談</span> 最低銷售量承諾與違約後果</div>
+          <div class="qa-a">年度最低量多少？未達標的具體後果？</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q"><span class="tag missing">未談</span> 漲價機制</div>
+          <div class="qa-a">原料波動如何調價？提前多久通知？年度上限？</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q"><span class="tag missing">未談</span> 違約與終止條件</div>
+          <div class="qa-a">哪些情況可終止？終止後庫存處理？競業限制？</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q"><span class="tag missing">未談</span> 運輸責任歸屬</div>
+          <div class="qa-a">工廠到工地的運費誰出？途中破損誰承擔？</div>
+        </div>
+      </div>
+    </div>
+    <div class="card gap-card">
+      <div class="card-head">產品 &amp; 品質</div>
+      <div class="card-body" style="font-size:13px;">
+        <div class="qa">
+          <div class="qa-q"><span class="tag missing">未談</span> 產品詳細規格</div>
+          <div class="qa-a">厚度、耐磨層厚度、尺寸、箱重 — 基本報價資訊都缺</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q"><span class="tag missing">未談</span> 防火/止滑/耐磨</div>
+          <div class="qa-a">CNS 防火等級、止滑係數、耐磨轉數 — 公共空間法規要求</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q"><span class="tag missing">未談</span> ESD 導電地板</div>
+          <div class="qa-a">半導體廠核心需求，有無 ESD 版本？表面電阻值？</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q"><span class="tag missing">未談</span> 產品保固</div>
+          <div class="qa-a">保固年限？範圍（磨損/褪色/翹曲）？施工保固？</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q"><span class="tag missing">未談</span> 品質異常處理</div>
+          <div class="qa-a">到貨瑕疵退換流程？施工後品質爭議判定？色差控制？</div>
+        </div>
+        <div class="qa">
+          <div class="qa-q"><span class="tag missing">未談</span> 交期</div>
+          <div class="qa-a">標準交期幾天？急單選項？</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card gap-card" style="margin-top:0;">
+    <div class="card-head">素材 &amp; 行銷</div>
+    <div class="card-body">
+      <div class="grid-3" style="font-size:13px;">
+        <div>
+          <div class="qa-q" style="font-size:12px;"><span class="tag missing">未取得</span> 完整牌價表</div>
+          <div class="qa-a" style="font-size:12px;">沒有牌價表，報價表做不了</div>
+        </div>
+        <div>
+          <div class="qa-q" style="font-size:12px;"><span class="tag missing">未取得</span> SGS 報告</div>
+          <div class="qa-a" style="font-size:12px;">官網 + 認證都需要</div>
+        </div>
+        <div>
+          <div class="qa-q" style="font-size:12px;"><span class="tag missing">未取得</span> 產品照片/型錄</div>
+          <div class="qa-a" style="font-size:12px;">DM、PPT、官網全部卡住</div>
+        </div>
+        <div>
+          <div class="qa-q" style="font-size:12px;"><span class="tag missing">未取得</span> 樣品</div>
+          <div class="qa-a" style="font-size:12px;">業務拜訪需要</div>
+        </div>
+        <div>
+          <div class="qa-q" style="font-size:12px;"><span class="tag missing">未確認</span> 品牌使用規範</div>
+          <div class="qa-a" style="font-size:12px;">能否自行設計素材？Logo 規範？</div>
+        </div>
+        <div>
+          <div class="qa-q" style="font-size:12px;"><span class="tag missing">未確認</span> 認證費用分攤</div>
+          <div class="qa-a" style="font-size:12px;">95-225 萬認證費誰出多少？</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== ACTIONS ========== -->
+<div class="section" id="actions">
+  <div class="section-title"><span class="ico" style="background:var(--warn)">&#10003;</span> 待辦追蹤</div>
+
+  <div class="card">
+    <div class="card-head" style="background:var(--red-light);color:var(--red);">最緊急 — 本週內</div>
+    <div class="card-body">
+      <div class="todo"><span class="box"></span>向長虹索取<strong>完整牌價表</strong><span class="owner">南二</span></div>
+      <div class="todo"><span class="box"></span>向長虹索取<strong>SGS 檢測報告</strong><span class="owner">南二</span></div>
+      <div class="todo"><span class="box"></span>向長虹索取<strong>既有直客清單</strong>（含清風等合作廠商）<span class="owner">南二</span></div>
+      <div class="todo"><span class="box"></span>約定<strong>大寮廠參訪時間</strong><span class="owner">南二</span></div>
+      <div class="todo"><span class="box"></span>將制式合約草案<strong>發給長虹法務</strong>修正<span class="owner">PM + 法務</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" style="background:var(--warn-light);color:var(--warn);">短期 — 兩週內</div>
+    <div class="card-body">
+      <div class="todo"><span class="box"></span>聯繫 <strong>RCS 認證機構</strong>（回收料 5% 已達標，可立即啟動）<span class="owner">PM</span></div>
+      <div class="todo"><span class="box"></span>查詢<strong>環境部循環產品認證</strong>的申請條件<span class="owner">PM</span></div>
+      <div class="todo" style="text-decoration:line-through;opacity:0.6;"><span class="box">&#9745;</span>評估<strong>租賃模式</strong>商業可行性（循環署補助？定價策略？）<span class="owner">PM</span></div>
+      <div style="margin:-6px 0 8px 28px;padding:6px 12px;background:#fff3f3;border:1px solid #e8a0a0;border-radius:4px;font-size:12px;color:#8a2200;">
+        <strong>&#9888; 2026/04 查證結果：</strong>目前台灣<strong>無</strong>針對「企業租賃循環產品」的政府補助計畫。資源循環推動法仍在立法程序中，現行制度（產創條例投資抵減、資源循環署補助）均不適用於終端租賃客戶。<br>
+        <strong>可用行銷切角：</strong>租金列營業費用（一般性節稅）、綠色採購申報（ESG 加分）、CSR 報告素材。勿對客戶宣稱有政府補助。
+      </div>
+      <div class="todo"><span class="box"></span>洽談<strong>羅技 / VOGUE</strong>示範場域意願<span class="owner">PM / 業務</span></div>
+      <div class="todo"><span class="box"></span>產出 <strong>AI 模擬小工具</strong>需求規格（拍照套花色 DEMO）<span class="owner">PM</span></div>
+      <div class="todo"><span class="box"></span>拍攝<strong>大豐破碎 PVC 的短影音</strong>素材<span class="owner">PM</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">中期 — 一個月內</div>
+    <div class="card-body">
+      <div class="todo"><span class="box"></span>獨家經銷合約完成<strong>雙方法務審閱</strong><span class="owner">法務</span></div>
+      <div class="todo"><span class="box"></span>與長虹敲定<strong>專利共同申請的範圍與歸屬</strong><span class="owner">PM + 法務</span></div>
+      <div class="todo"><span class="box"></span><strong>MIT 微笑標章</strong>送件<span class="owner">PM</span></div>
+      <div class="todo"><span class="box"></span>GRS 認證機構聯繫 — 討論回收料比例<strong>拉到 20%</strong> 的路徑<span class="owner">PM</span></div>
+      <div class="todo"><span class="box"></span>下次會議補齊：<strong>產品規格、保固、交期、漲價機制</strong><span class="owner">PM + 南二</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== DECISIONS ========== -->
+<div class="section" id="decisions">
+  <div class="section-title"><span class="ico" style="background:var(--pink)">&#9733;</span> 主管決策建議</div>
+
+  <div class="alert purple">
+    <span class="ic">&#128188;</span>
+    <div>
+      <strong>目前進度：</strong>已確立「零甲醛拆裝」為核心競爭力，而非單純的再生料地板。<br>
+      <strong>關鍵風險：</strong>綠建材標章正式宣告失敗，需改以「RCS/GRS + 職場健康(無甲醛)」作為業務切入點。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">需要主管決策的項目</div>
+    <div class="card-body" style="padding:0;">
+      <table>
+        <thead><tr><th style="width:40%;">決策項目</th><th>選項</th><th>建議</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>示範場域</strong><br>是否授權洽談租賃模式示範點？</td>
+            <td>A. 羅技 (Logitech) 辦公室<br>B. VOGUE 辦公室<br>C. 其他指標品牌</td>
+            <td style="color:var(--ok);font-weight:700;">建議 Go — 免費示範 3-6 個月換取案例素材</td>
+          </tr>
+          <tr>
+            <td><strong>專利申請</strong><br>是否與長虹共同申請專利？</td>
+            <td>A. 共同申請（配方+製程+回收）<br>B. 各自申請不同項目<br>C. 暫不申請</td>
+            <td style="color:var(--warn);font-weight:700;">建議先確認歸屬條件再決定</td>
+          </tr>
+          <tr>
+            <td><strong>AI 模擬工具</strong><br>是否投入開發花色模擬 DEMO？</td>
+            <td>A. 自行開發<br>B. 外包<br>C. 暫不做</td>
+            <td style="color:var(--ok);font-weight:700;">建議做 — 業務前線 DEMO 利器</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">下一步行動</div>
+    <div class="card-body" style="font-size:14px;">
+      <ol style="padding-left:20px;color:var(--text2);">
+        <li style="margin-bottom:8px;">向長虹索取<strong>完整牌價表、SGS 報告</strong>及約定<strong>大寮廠參訪時間</strong></li>
+        <li style="margin-bottom:8px;">產出 <strong>AI 模擬小工具</strong>（拍照即可套用地板花色）供前線業務 DEMO</li>
+        <li style="margin-bottom:8px;">安排第二次會議，補齊<strong>產品規格、保固、交期、漲價、認證費用分攤</strong></li>
+        <li>評估<strong>租賃模式</strong>並尋找首個示範場域</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function go(id){ document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'}); }
+const secs = document.querySelectorAll('.section[id]');
+const links = document.querySelectorAll('.nav a');
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ links.forEach(l=>l.classList.remove('active')); const a=document.querySelector(`.nav a[onclick="go('${e.target.id}')"]`); if(a)a.classList.add('active'); }});
+},{rootMargin:'-60px 0px -70% 0px'});
+secs.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大豐 x 長虹 會議紀錄 2026/03/18</title>
+<style>
+  :root {
+    --bg: #f1f5f9;
+    --surface: #ffffff;
+    --surface2: #f8fafc;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text2: #475569;
+    --text3: #94a3b8;
+    --pri: #2563eb;
+    --pri2: #1d4ed8;
+    --ok: #16a34a;
+    --ok-dim: #bbf7d0;
+    --warn: #d97706;
+    --warn-dim: #fde68a;
+    --red: #dc2626;
+    --accent1: #2563eb;
+    --accent2: #7c3aed;
+    --accent3: #0891b2;
+    --accent4: #059669;
+    --accent5: #d97706;
+    --accent6: #db2777;
+    --accent7: #4f46e5;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Microsoft JhengHei", "PingFang TC", -apple-system, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ---- Header ---- */
+  .header {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .header-top {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .header h1 {
+    font-size: 26px; font-weight: 800; letter-spacing: .5px;
+    background: linear-gradient(90deg, #2563eb, #7c3aed);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .header .subtitle { font-size: 13px; color: var(--text2); margin-top: 4px; }
+  .header .meeting-info { font-size: 13px; color: var(--text2); margin-top: 8px; }
+  .header .meeting-info strong { color: var(--text); }
+  .header-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .header-actions button {
+    padding: 8px 18px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text); font-size: 13px;
+    cursor: pointer; font-family: inherit; transition: all .15s;
+  }
+  .header-actions button:hover { background: var(--surface2); border-color: var(--text3); }
+  .header-actions button.primary {
+    background: var(--pri); border-color: var(--pri); font-weight: 600;
+  }
+  .header-actions button.primary:hover { background: var(--pri2); }
+
+  /* ---- Stats Row ---- */
+  .stats-row {
+    display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;
+  }
+  .stat-card {
+    flex: 1; min-width: 140px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 18px; box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  }
+  .stat-card .stat-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+  .stat-card .stat-value { font-size: 28px; font-weight: 800; margin-top: 2px; }
+  .stat-card .stat-bar { height: 4px; background: var(--surface2); border-radius: 99px; margin-top: 8px; overflow: hidden; }
+  .stat-card .stat-bar-fill { height: 100%; border-radius: 99px; transition: width .4s; }
+
+  /* ---- Main ---- */
+  .main { padding: 24px 40px 80px; }
+
+  /* ---- Topic Card ---- */
+  .topic {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    margin-bottom: 16px; overflow: hidden; transition: border-color .2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,.05);
+  }
+  .topic:hover { border-color: #cbd5e1; }
+  .topic.all-done { border-color: var(--ok); border-left: 3px solid var(--ok); }
+
+  .topic-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 24px; cursor: pointer; user-select: none;
+    transition: background .15s;
+  }
+  .topic-header:hover { background: var(--surface2); }
+
+  .topic-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 800; color: #fff; flex-shrink: 0;
+  }
+  .topic-title-area { flex: 1; }
+  .topic-title { font-size: 17px; font-weight: 700; }
+  .topic-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .topic-time {
+    font-size: 11px; font-weight: 600; color: var(--pri);
+    background: #dbeafe; border-radius: 4px; padding: 2px 8px;
+    margin-left: 8px;
+  }
+  .topic-progress {
+    display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  }
+  .topic-progress .tp-ring {
+    width: 38px; height: 38px; position: relative;
+  }
+  .tp-ring svg { transform: rotate(-90deg); }
+  .tp-ring .ring-text {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+  }
+  .topic-chevron {
+    color: var(--text3); transition: transform .2s; flex-shrink: 0;
+  }
+  .topic.collapsed .topic-chevron { transform: rotate(-90deg); }
+  .topic.collapsed .topic-body { display: none; }
+
+  .topic-body { border-top: 1px solid var(--border); }
+
+  /* ---- Status bar ---- */
+  .topic-status-bar {
+    display: flex; gap: 6px; padding: 12px 24px 0;
+  }
+  .tsb {
+    font-size: 11px; padding: 4px 14px; border-radius: 6px;
+    border: 1px solid var(--border); background: transparent; color: var(--text2);
+    cursor: pointer; font-family: inherit; transition: all .15s;
+  }
+  .tsb:hover { border-color: var(--text3); color: var(--text); }
+  .tsb.s-ok.on { background: var(--ok); color: #fff; border-color: var(--ok); }
+  .tsb.s-pend.on { background: var(--warn); color: #fff; border-color: var(--warn); }
+  .tsb.s-disc.on { background: var(--red); color: #fff; border-color: var(--red); }
+
+  /* ---- Group ---- */
+  .group { padding: 8px 24px; }
+  .group-label {
+    font-size: 12px; font-weight: 700; color: var(--text2);
+    padding: 6px 0 2px; border-bottom: 1px solid var(--border);
+    margin-bottom: 4px; text-transform: uppercase; letter-spacing: .5px;
+  }
+
+  /* ---- Bullet Item ---- */
+  .bullet {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 8px 0; border-bottom: 1px solid var(--bg);
+    transition: background .15s; border-radius: 6px;
+  }
+  .bullet:last-child { border-bottom: none; }
+  .bullet:hover { background: var(--surface2); }
+  .bullet.done { opacity: .5; }
+  .bullet.done label { text-decoration: line-through; }
+
+  .bullet input[type="checkbox"] {
+    margin-top: 4px; width: 18px; height: 18px;
+    accent-color: var(--ok); cursor: pointer; flex-shrink: 0;
+  }
+  .bullet label { cursor: pointer; flex: 1; font-size: 14px; line-height: 1.55; }
+  .bullet .note-btn {
+    flex-shrink: 0; margin-top: 2px;
+    background: none; border: 1px solid var(--border); border-radius: 5px;
+    color: var(--text3); font-size: 11px; padding: 2px 8px;
+    cursor: pointer; font-family: inherit; transition: all .15s;
+  }
+  .bullet .note-btn:hover { border-color: var(--text2); color: var(--text2); }
+  .bullet .note-btn.has-note { border-color: var(--warn-dim); color: var(--warn); }
+
+  /* ---- Inline Note ---- */
+  .note-area { padding: 0 24px 0 52px; }
+  .note-inline {
+    display: none; margin-bottom: 8px;
+  }
+  .note-inline.show { display: block; }
+  .note-inline textarea {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); padding: 8px 12px; font-size: 13px; font-family: inherit;
+    resize: vertical; min-height: 48px; line-height: 1.5;
+  }
+  .note-inline textarea:focus { outline: none; border-color: var(--pri); }
+  .note-display {
+    margin-bottom: 8px; padding: 6px 12px;
+    background: #fef3c7; border-left: 3px solid var(--warn);
+    border-radius: 0 6px 6px 0; font-size: 13px; color: #92400e;
+    white-space: pre-wrap;
+  }
+
+  /* ---- Topic Note ---- */
+  .topic-note { padding: 0 24px 14px; }
+  .tn-toggle {
+    font-size: 12px; color: var(--pri); cursor: pointer;
+    background: none; border: none; font-family: inherit;
+  }
+  .tn-toggle:hover { text-decoration: underline; }
+  .tn-box { display: none; margin-top: 6px; }
+  .tn-box.show { display: block; }
+  .tn-box textarea {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); padding: 10px 14px; font-size: 13px; font-family: inherit;
+    resize: vertical; min-height: 60px; line-height: 1.5;
+  }
+  .tn-box textarea:focus { outline: none; border-color: var(--pri); }
+  .tn-preview {
+    margin-top: 6px; padding: 8px 14px;
+    background: #fef3c7; border-left: 3px solid var(--warn);
+    border-radius: 0 6px 6px 0; font-size: 13px; color: #92400e;
+    white-space: pre-wrap;
+  }
+
+  /* ---- Cert Table (T7) ---- */
+  .cert-wrap { padding: 0 24px 12px; overflow-x: auto; }
+  .cert-tbl {
+    width: 100%; border-collapse: collapse; font-size: 12px; min-width: 700px;
+  }
+  .cert-tbl th {
+    background: var(--surface2); padding: 8px 10px; text-align: left;
+    font-weight: 700; color: var(--text2); border-bottom: 2px solid var(--border);
+    white-space: nowrap; position: sticky; top: 0;
+  }
+  .cert-tbl td {
+    padding: 8px 10px; border-bottom: 1px solid var(--border);
+    color: var(--text2); line-height: 1.5; vertical-align: top;
+  }
+  .cert-tbl tr:hover td { background: var(--surface2); }
+  .cert-tbl .star { color: var(--warn); }
+  .cert-tbl .blocked td { color: var(--red); opacity: .7; }
+  .cert-tbl .cert-name-col { font-weight: 700; color: var(--text); white-space: nowrap; }
+
+  /* Cert decision */
+  .cert-decisions { padding: 4px 24px 8px; }
+  .cd-row {
+    display: flex; align-items: center; gap: 10px; padding: 5px 0;
+    border-bottom: 1px solid var(--bg);
+  }
+  .cd-row:last-child { border-bottom: none; }
+  .cd-label { font-size: 13px; font-weight: 600; min-width: 150px; }
+  .cd-btns { display: flex; gap: 4px; margin-left: auto; }
+  .cd-btn {
+    font-size: 11px; padding: 3px 12px; border-radius: 5px;
+    border: 1px solid var(--border); background: transparent; color: var(--text3);
+    cursor: pointer; font-family: inherit; transition: all .15s;
+  }
+  .cd-btn:hover { border-color: var(--text2); }
+  .cd-btn.go.on { background: var(--ok); color: #fff; border-color: var(--ok); }
+  .cd-btn.hold.on { background: var(--warn); color: #fff; border-color: var(--warn); }
+  .cd-btn.no.on { background: var(--red); color: #fff; border-color: var(--red); }
+
+  /* Cert applicant selector in table */
+  .ca-btns { display: flex; gap: 3px; }
+  .ca-btn {
+    font-size: 10px; padding: 2px 7px; border-radius: 4px;
+    border: 1px solid var(--border); background: transparent; color: var(--text3);
+    cursor: pointer; font-family: inherit; transition: all .15s; white-space: nowrap;
+  }
+  .ca-btn:hover { border-color: var(--text2); }
+  .ca-btn.on { font-weight: 700; }
+  .ca-btn.ca-df.on { background: var(--pri); color: #fff; border-color: var(--pri); }
+  .ca-btn.ca-ch.on { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+  .ca-btn.ca-both.on { background: var(--accent3); color: #fff; border-color: var(--accent3); }
+
+  /* Alert box */
+  .alert {
+    margin: 8px 24px 10px; padding: 10px 16px; border-radius: 8px;
+    font-size: 12px; line-height: 1.6;
+  }
+  .alert.a-red { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+  .alert.a-blue { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+  .alert strong { font-weight: 700; }
+
+  /* ---- Export Modal ---- */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4);
+    z-index: 999; align-items: center; justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    width: 90%; max-width: 780px; max-height: 85vh; display: flex; flex-direction: column;
+    box-shadow: 0 25px 50px rgba(0,0,0,.15);
+  }
+  .modal-header {
+    padding: 18px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-header h2 { font-size: 16px; font-weight: 700; }
+  .modal-close {
+    background: none; border: none; color: var(--text3); font-size: 22px;
+    cursor: pointer; padding: 4px 8px; line-height: 1;
+  }
+  .modal-body { padding: 20px 24px; overflow-y: auto; flex: 1; }
+  .modal-body pre {
+    font-family: "Microsoft JhengHei", monospace;
+    font-size: 13px; line-height: 1.7; white-space: pre-wrap;
+    color: var(--text2);
+  }
+  .modal-footer {
+    padding: 14px 24px; border-top: 1px solid var(--border);
+    display: flex; gap: 8px; justify-content: flex-end;
+  }
+  .modal-footer button {
+    padding: 8px 20px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface2); color: var(--text); font-size: 13px;
+    cursor: pointer; font-family: inherit;
+  }
+  .modal-footer button.primary { background: var(--pri); border-color: var(--pri); }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 768px) {
+    .header { padding: 20px 16px 16px; }
+    .main { padding: 16px; }
+    .topic-header { padding: 14px 16px; }
+    .group, .topic-status-bar, .topic-note, .cert-wrap, .cert-decisions, .alert { padding-left: 16px; padding-right: 16px; }
+    .note-area { padding-left: 42px; padding-right: 16px; }
+    .stat-card { min-width: 120px; }
+    .header h1 { font-size: 20px; }
+  }
+
+  @media print {
+    .header-actions, .tsb, .note-btn, .cd-btns, .ca-btns, .modal-overlay { display: none !important; }
+    .topic-body { display: block !important; }
+    .topic { box-shadow: none; border: 1px solid #ccc; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>大豐 x 長虹 ｜ 第一次外部會議紀錄</h1>
+      <div class="subtitle">PVC 循環再生地板合作 — 會議紀錄 Dashboard</div>
+      <div class="meeting-info"><strong>會議日期：</strong>2026/03/18（三）下午 03:08　｜　<strong>地點：</strong>長虹</div>
+    </div>
+    <div class="header-actions">
+      <button onclick="expandAll()">全部展開</button>
+      <button onclick="collapseAll()">全部收合</button>
+      <button onclick="saveBackup()">儲存備份</button>
+      <button onclick="document.getElementById('loadFile').click()">載入備份</button>
+      <input type="file" id="loadFile" accept=".json" style="display:none" onchange="loadBackup(event)">
+      <button class="primary" onclick="showExport()">產出會議報告</button>
+    </div>
+  </div>
+  <div class="stats-row" id="statsRow"></div>
+</div>
+
+<div class="main" id="app"></div>
+
+<!-- Export Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>會議報告預覽</h2>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body"><pre id="reportContent"></pre></div>
+    <div class="modal-footer">
+      <button onclick="closeModal()">關閉</button>
+      <button onclick="copyReport()">複製到剪貼簿</button>
+      <button class="primary" onclick="downloadReport()">下載 .txt</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SK = "changhong_meeting_record_260318";
+
+const COLORS = ["#3b82f6","#8b5cf6","#06b6d4","#10b981","#f59e0b","#ec4899","#6366f1"];
+
+const topics = [
+  {
+    id:"T1", title:"合作框架與雙方期待", sub:"經銷合約 / 專利 / 定位與目標", time:"25 min",
+    groups:[
+      { label:"經銷合約", items:[
+        {id:"a1", text:"經銷範圍：全台獨家？排除特定通路（電商/標案）？長虹既有直客如何處理？"},
+        {id:"a2", text:"合約年限、續約條件、最低銷售量承諾與未達標後果"},
+        {id:"a3", text:"違約與終止條件、終止後庫存處理、競業限制期"},
+      ]},
+      { label:"專利共同申請", items:[
+        {id:"a4", text:"申請範圍（配方/製程/回收應用）、歸屬、費用分攤、預計時程"},
+      ]},
+      { label:"雙方期待", items:[
+        {id:"a5", text:"長虹為什麼選擇與大豐合作？對大豐的期待？"},
+        {id:"a6", text:"長虹估計年市場規模？目前自己怎麼賣？有無其他通路在賣類似產品？"},
+      ]},
+    ]
+  },
+  {
+    id:"T2", title:"價格與商務條件", sub:"牌價 / 折扣 / 付款 / 調價機制", time:"15 min",
+    groups:[
+      { label:null, items:[
+        {id:"a7", text:"索取完整牌價表（所有花色/規格，當場取得）"},
+        {id:"a8", text:"七五折是否含運、含稅？有無其他附加費用？"},
+        {id:"a9", text:"階梯折扣：3,000 / 5,000 / 10,000 坪以上？年度返點？"},
+        {id:"a10", text:"付款條件：月結天數、信用額度、預付折扣"},
+        {id:"a11", text:"漲價機制：原料波動如何調價？提前多久通知？年度調幅上限？"},
+      ]},
+    ]
+  },
+  {
+    id:"T3", title:"產品規格與品質", sub:"技術參數 / 再生料 / 保固 / 品管", time:"20 min",
+    groups:[
+      { label:"基本規格", items:[
+        {id:"a12", text:"厚度、耐磨層、尺寸、箱重、安裝方式（膠黏/卡扣）、花色總數"},
+        {id:"a13", text:"防火等級、止滑係數、耐磨轉數、甲醛/VOC — 有無 SGS 報告？"},
+        {id:"a14", text:"使用環境限制：戶外？潮濕區？地暖？基層要求？"},
+        {id:"a15", text:"是否有 ESD 導電版本？導電規格（表面電阻值）？"},
+      ]},
+      { label:"再生料與循環", items:[
+        {id:"a16", text:"再生料實際佔比 %？來源與追溯文件？（GRS >= 20%、RCS >= 5%）"},
+        {id:"a17", text:"產品預期壽命幾年？正常磨損定義？"},
+      ]},
+      { label:"保固與品管", items:[
+        {id:"a18", text:"保固年限與範圍（磨損/褪色/翹曲）？排除條件？"},
+        {id:"a19", text:"批次色差控制標準？同案場能否保證同批？"},
+        {id:"a20", text:"到貨瑕疵退換貨流程；施工後品質爭議責任判定"},
+      ]},
+    ]
+  },
+  {
+    id:"T4", title:"供貨與物流", sub:"交期 / 產能 / 運輸 / 庫存", time:"10 min",
+    groups:[
+      { label:null, items:[
+        {id:"a21", text:"標準交期（240 坪 MOQ）與小量交期（120 坪）分別多久？"},
+        {id:"a22", text:"急單選項：最短交期？加急費？月產能上限？旺季排程？"},
+        {id:"a23", text:"運輸：誰負責？運費計算？途中破損歸屬？包裝方式？"},
+        {id:"a24", text:"是否為大豐備安全庫存？還是完全接單生產？"},
+      ]},
+    ]
+  },
+  {
+    id:"T5", title:"施工、拆除與回收", sub:"工班 / 費用 / 拆除服務 / 舊料回收", time:"20 min",
+    groups:[
+      { label:"施工", items:[
+        {id:"a25", text:"工班來源、數量、排程預約期、可否週末夜間施工？"},
+        {id:"a26", text:"施工費：每坪費用、底層整平、偏遠加價、最小施工面積"},
+        {id:"a27", text:"施工保固；無塵室/ESD 經驗與證照？科技廠進廠流程？"},
+      ]},
+      { label:"拆除與回收", items:[
+        {id:"a28", text:"拆除服務：誰負責？每坪費用？不同舊地板類型差異？"},
+        {id:"a29", text:"廢料歸屬：PVC 舊料歸誰？非 PVC 歸誰？"},
+        {id:"a30", text:"回收物流與費用？品質標準？最低量？非長虹產品可否回收？"},
+      ]},
+    ]
+  },
+  {
+    id:"T6", title:"素材取得與品牌", sub:"當場要拿到的東西 / 品牌使用規範", time:"10 min",
+    groups:[
+      { label:"當場帶走", items:[
+        {id:"a31", text:"完整牌價表 + 型錄 PDF + 實體樣品（每花色至少 2 片）"},
+        {id:"a32", text:"高解析照片/情境照/工廠照；施工 SOP；維護手冊"},
+        {id:"a33", text:"所有 SGS/CNS 檢測報告 PDF；碳足跡、回收比例等環保數據"},
+      ]},
+      { label:"品牌與行銷", items:[
+        {id:"a34", text:"可否自行設計素材？Logo 規範？案場授權？共同參展意願？"},
+      ]},
+    ]
+  },
+  {
+    id:"T7", title:"認證策略", sub:"逐項可行性 / 長虹配合項 / 費用分攤 / 時程", time:"25 min",
+    isCert: true,
+    groups:[
+      { label:"長虹認證現況", items:[
+        {id:"a35", text:"長虹目前已取得哪些認證？（ISO 9001/14001？其他？）"},
+        {id:"a36", text:"工廠登記證、營業登記是否齊全？"},
+        {id:"a37", text:"是否有專人可配合認證流程？（審核、文件、現場查核）"},
+      ]},
+      { label:"逐項認證討論（對照下方參考表）", items:[
+        {id:"a38", text:"MIT 微笑標章：工廠文件齊全？可配合查核？費用誰出？"},
+        {id:"a39", text:"GRS：再生料 >= 20%？追溯文件完備？可配合到廠審核？"},
+        {id:"a40", text:"RCS：若再生料不到 20%，是否 >= 5%？可與 GRS 同步申請"},
+        {id:"a41", text:"碳足跡：能否提供完整製程能耗數據？有既有 LCA 資料？"},
+        {id:"a42", text:"FloorScore：VOC 數據？是否有 CDPH v1.2 測試？願意送樣？"},
+        {id:"a43", text:"綠建材標章：PVC 成分是否為障礙？長虹是否曾申請？TABC 回覆？"},
+      ]},
+      { label:"費用分攤與分工", items:[
+        {id:"a44", text:"費用如何分攤？（各半/依比例/一方出錢一方出人力？）"},
+        {id:"a45", text:"認證掛名：掛長虹？大豐？聯名？影響誰能使用標章"},
+        {id:"a46", text:"各認證由誰主導申請？"},
+      ]},
+    ]
+  },
+];
+
+const certData = [
+  {cid:"cert1",name:"MIT 微笑標章",pri:"★★★",fromCH:"工廠文件 + 現場查核",cost:"5-15 萬",time:"3-6 個月",note:"門檻最低，建議最先送件",no:false},
+  {cid:"cert2",name:"GRS 全球回收標準",pri:"★★★",fromCH:"再生料來源證明 + 工廠審核",cost:"15-30 萬",time:"4-6 個月",note:"回收料需 >= 20%",no:false},
+  {cid:"cert3",name:"RCS 回收聲明標準",pri:"★★★",fromCH:"同 GRS",cost:"10-20 萬",time:"3-5 個月",note:"回收料 >= 5%；可與 GRS 同機構申請",no:false},
+  {cid:"cert4",name:"碳足跡標籤",pri:"★★☆",fromCH:"製程能耗數據",cost:"15-30 萬",time:"6-9 個月",note:"ESG 客戶需求；需 LCA 顧問",no:false},
+  {cid:"cert5",name:"FloorScore",pri:"★☆☆",fromCH:"產品送樣 + 配方聲明",cost:"30-80 萬",time:"6-12 個月",note:"LEED 加分；優先序低，可放第二年",no:false},
+  {cid:"cert6",name:"綠建材標章",pri:"---",fromCH:"---",cost:"20-50 萬",time:"6-12 個月",note:"PVC 成分可能無法申請，需先確認 TABC",no:true},
+];
+
+const certDecs = [
+  {id:"c1",name:"MIT 微笑標章"},{id:"c2",name:"GRS 全球回收標準"},{id:"c3",name:"RCS 回收聲明標準"},
+  {id:"c4",name:"碳足跡標籤"},{id:"c5",name:"FloorScore"},{id:"c6",name:"綠建材標章"},
+];
+
+// ============================================================
+// Pre-filled meeting notes from 2026/03/18 meeting
+// ============================================================
+const DEFAULT_STATE = {
+  ck: {},
+  notes: {
+    "a1": "目前有跟清風合作, 科技廠\n先提供制式合約 供法務修正",
+    "a2": "七五折售價\n清運拆除另外收費",
+    "a7": "接單生產, 一天2400坪\n超過1200坪, 價格另議 另外報價 無須列在合約\n目前所有花色都可以製作, 若客戶有原花色需求可另討論",
+    "a8": "七五折售價\n清運拆除另外收費",
+    "a9": "接單生產, 一天2400坪\n超過1200坪, 價格另議 另外報價 無須列在合約",
+    "a10": "叫貨付款流程\n以月結為主"
+  },
+  tnotes: {
+    "T1": "降噪需求 SPC地板(含集音墊, 乾式施工 直接貼上去) 無法回收\n幫半導體的廢棄物最解決方案\nex:中華電信簽長期合約 or 聯強國際, 電信三雄門市 3~5年會替換一次塑膠地板\n希望穩定輸出, 目前台北有一間施工業者 綁中華電信 每天晚上十點施工\n工法：黑色PVC底墊不貼原地板, PVC地板貼在PVC底墊上",
+    "T2": "製作AI小工具, 現場拍照 上花色就可以模擬 DEMO\n有遠紅外線效果, 但不能說明有醫療功效\n矽晶圓 二氧化矽取代原油漆的好處就是取代石英, 流體性較佳\n二氧化矽抗菌佳\n\n材料$2600\n施工$600~650\n中國含工帶料2000內\n我們報 $3500~3800(連工帶料) 議價 10~15% 工錢有空間且浮動",
+    "T5": "50坪地板 200坪油漆 找當地工班配合  施工完 拍完照 簽完約, 簽約若是用租約 我們免費回收 拆除$400~600元/坪 (若要除膠$2000/坪 起跳 不含拆除費, 除膠需要大量的甲醛)\n自己生產的黑底墊(可以加比較多手套), 一般外面不會鋪黑底墊, 黑底墊(1.5cm 旁邊會收邊收掉)是為了拆除方便, 不傷害原本的底材, 因此可以零甲醛作業\nESG議題+CSR議題 職場健康, 無甲醛, 大多是營業場所 也是會有客戶的場所\n租賃：恢復原狀 是大賣點\n原本拆掉的地墊很難回收因為會黏到髒汙, 現在加黑底墊有優勢, 且整片很重所以不會移動\n\n拆除的費用一定要另外列出來報價, 而且要等到要拆除時才能報, 要在合約中載明, 因為還有很多上方廢棄物的問題\n馬上貼完馬上能使用 感壓膠, 越壓越穩\n有40%是碳酸鈣(石頭粉) 60% PVC(裡面可加20%手套, 目前是5~10%)",
+    "T7": "二氧化矽 \"抗菌\"功能\n遠紅外線\n能去化多少手套 矽晶圓\n要去查詢認證 環境部 循環產品等? 可以跟綠建材(營建署)同步的項目?\n地板大多都是做國外認證\n聚氯乙烯 最耐燃 but PVC不能申請綠建材\n要用再生的切角溝通, 回收料高達OO%\n＊建議與建商綁專案執行\n\n針對來料申請\nRCS認證目前可以開 5%矽晶圓\nGRS 要 20% (可以針對PVC手套這個來料)\n\n對科技廠：廢棄物循環再利用\n對一般業者：拆除循環議題 更換方便 拆除安裝成本更低\n\nPVC回收破碎也是大豐製作\n用長虹30多年塑膠地板上游經驗的老品牌(拉膜) 整合台灣供應鏈\n模賣給製造底板的廠商, 去壓跟貼合地板與紋路\n\n拍攝破碎與製作地板的短影音(小葛可以粉碎很細 這部分的畫面可以使用)\n\n醫院 乳膠手套是否可以改PVC 然後就可以導入廢棄物減量\n下游代工廠目前沒有揭露\n\n青葉油漆生產的矽晶圓油漆 不能販售經銷商, 只能販售給終端客戶\n建議油漆跟地板一起做\nMOBIUS QRCODE 每一塊地板都有生產履歷\n\n可以增加租賃模式 搭配循環署 或是直接改成全租賃模式\n租賃可以抵稅\n1. 零碳排\n2. 抵稅\n3. 形象差異化 (確定後續可以處理所以可以做租賃)\n4. EX:前三個月到半年免費, 僅工錢\n5. 示範點 旗艦店 (ex:羅技)\n三年後就免費 送你 or 隨時可以舊換新 付租金 僅負擔拆除費用即可"
+  },
+  st: {},
+  cd: {},
+  ca: {}
+};
+
+// State
+let S = load();
+function load(){
+  try{
+    const r=localStorage.getItem(SK);
+    if(r){
+      const d=JSON.parse(r);
+      return{ck:d.ck||{},notes:d.notes||{},tnotes:d.tnotes||{},st:d.st||{},cd:d.cd||{},ca:d.ca||{}};
+    }
+  }catch(e){}
+  // First time: use pre-filled meeting data
+  return JSON.parse(JSON.stringify(DEFAULT_STATE));
+}
+function save(){localStorage.setItem(SK,JSON.stringify(S))}
+
+// Render
+function render(){
+  renderStats();
+  renderTopics();
+}
+
+function renderStats(){
+  const all = topics.flatMap(t=>t.groups.flatMap(g=>g.items));
+  const done = all.filter(i=>S.ck[i.id]).length;
+  const total = all.length;
+  const pct = total?Math.round(done/total*100):0;
+  const notesCount = Object.keys(S.notes).filter(k=>S.notes[k]).length;
+  const tnotesCount = Object.keys(S.tnotes).filter(k=>S.tnotes[k]).length;
+
+  let okC=0, pendC=0, discC=0;
+  topics.forEach(t=>{
+    if(S.st[t.id]==='ok')okC++;
+    if(S.st[t.id]==='pend')pendC++;
+    if(S.st[t.id]==='disc')discC++;
+  });
+
+  document.getElementById("statsRow").innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">確認進度</div>
+      <div class="stat-value" style="color:var(--pri)">${pct}%</div>
+      <div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%;background:var(--pri)"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">已確認項目</div>
+      <div class="stat-value" style="color:var(--ok)">${done}<span style="font-size:14px;color:var(--text3)"> / ${total}</span></div>
+      <div class="stat-bar"><div class="stat-bar-fill" style="width:${total?done/total*100:0}%;background:var(--ok)"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">會議筆記</div>
+      <div class="stat-value" style="font-size:16px;margin-top:6px">
+        <span style="color:var(--warn)">${notesCount} 項目備註</span>
+        <span style="color:var(--text3);margin:0 4px">/</span>
+        <span style="color:var(--pri)">${tnotesCount} 議題筆記</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">議題狀態</div>
+      <div class="stat-value" style="font-size:16px;margin-top:6px">
+        <span style="color:var(--ok)">${okC} OK</span>
+        <span style="color:var(--text3);margin:0 4px">/</span>
+        <span style="color:var(--warn)">${pendC} 待補</span>
+        <span style="color:var(--text3);margin:0 4px">/</span>
+        <span style="color:var(--red)">${discC} 再議</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderTopics(){
+  const app = document.getElementById("app");
+  let html = "";
+
+  topics.forEach((t,ti)=>{
+    const allItems = t.groups.flatMap(g=>g.items);
+    const done = allItems.filter(i=>S.ck[i.id]).length;
+    const total = allItems.length;
+    const pct = total?Math.round(done/total*100):0;
+    const allDone = done===total&&total>0;
+    const st = S.st[t.id]||"";
+    const color = COLORS[ti%COLORS.length];
+
+    // Ring SVG
+    const r=15, c=2*Math.PI*r, offset=c-(pct/100)*c;
+    const ringColor = allDone?'var(--ok)':color;
+
+    html+=`<div class="topic ${allDone?'all-done':''}" id="${t.id}">
+      <div class="topic-header" onclick="toggle('${t.id}')">
+        <div class="topic-icon" style="background:${color}">${ti+1}</div>
+        <div class="topic-title-area">
+          <span class="topic-title">${t.title}</span>
+          <span class="topic-time">${t.time}</span>
+          <div class="topic-sub">${t.sub}</div>
+        </div>
+        <div class="topic-progress">
+          <div class="tp-ring">
+            <svg width="38" height="38" viewBox="0 0 38 38">
+              <circle cx="19" cy="19" r="${r}" fill="none" stroke="var(--surface2)" stroke-width="3"/>
+              <circle cx="19" cy="19" r="${r}" fill="none" stroke="${ringColor}" stroke-width="3"
+                stroke-dasharray="${c}" stroke-dashoffset="${offset}" stroke-linecap="round"/>
+            </svg>
+            <span class="ring-text">${pct}%</span>
+          </div>
+        </div>
+        <svg class="topic-chevron" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+        </svg>
+      </div>
+      <div class="topic-body">
+        <div class="topic-status-bar">
+          <button class="tsb s-ok ${st==='ok'?'on':''}" onclick="setSt('${t.id}','ok')">OK 完成</button>
+          <button class="tsb s-pend ${st==='pend'?'on':''}" onclick="setSt('${t.id}','pend')">有待補</button>
+          <button class="tsb s-disc ${st==='disc'?'on':''}" onclick="setSt('${t.id}','disc')">需再議</button>
+        </div>`;
+
+    t.groups.forEach(g=>{
+      html+=`<div class="group">`;
+      if(g.label) html+=`<div class="group-label">${g.label}</div>`;
+      g.items.forEach(item=>{
+        const ck=!!S.ck[item.id];
+        const nt=S.notes[item.id]||"";
+        html+=`
+          <div class="bullet ${ck?'done':''}" id="b-${item.id}">
+            <input type="checkbox" id="${item.id}" ${ck?'checked':''} onchange="ckItem('${item.id}',this.checked)">
+            <label for="${item.id}">${item.text}</label>
+            <button class="note-btn ${nt?'has-note':''}" onclick="toggleItemNote('${item.id}')">
+              ${nt?'筆記':'+ 備註'}
+            </button>
+          </div>
+          <div class="note-area">
+            <div class="note-inline" id="ni-${item.id}">
+              <textarea placeholder="備註 / 長虹回覆..." oninput="saveItemNote('${item.id}',this.value)">${esc(nt)}</textarea>
+            </div>
+            ${nt?`<div class="note-display" id="nd-${item.id}">${esc(nt)}</div>`:''}
+          </div>`;
+      });
+      html+=`</div>`;
+    });
+
+    // T7: cert table + alerts + decisions
+    if(t.isCert){
+      html+=`
+        <div class="alert a-red">
+          <strong>綠建材標章（再生類）：PVC 成分可能無法申請。</strong><br>
+          建議會前先致電 TABC（台灣建築中心）確認，或請長虹說明是否曾申請及結果。替代方案：申請「高性能綠建材」。
+        </div>
+        <div class="alert a-blue">
+          <strong>認證費用預估合計：95 - 225 萬</strong>（依申請項目而定）<br>
+          第一批 MIT+GRS+RCS：30-65 萬 ｜ 第二批 碳足跡：15-30 萬 ｜ 第三批 FloorScore：30-80 萬
+        </div>
+        <div class="cert-wrap"><table class="cert-tbl">
+          <thead><tr><th>認證</th><th>優先</th><th>誰申請</th><th>需長虹提供</th><th>費用</th><th>時程</th><th>備註</th></tr></thead>
+          <tbody>`;
+      certData.forEach(c=>{
+        const ca=S.ca[c.cid]||"";
+        html+=`<tr class="${c.no?'blocked':''}">
+          <td class="cert-name-col">${c.name}</td><td class="star">${c.pri}</td>
+          <td><div class="ca-btns">
+            <button class="ca-btn ca-df ${ca==='df'?'on':''}" onclick="setCa('${c.cid}','df')">大豐</button>
+            <button class="ca-btn ca-ch ${ca==='ch'?'on':''}" onclick="setCa('${c.cid}','ch')">長虹</button>
+            <button class="ca-btn ca-both ${ca==='both'?'on':''}" onclick="setCa('${c.cid}','both')">共同</button>
+          </div></td>
+          <td>${c.fromCH}</td><td style="white-space:nowrap">${c.cost}</td>
+          <td style="white-space:nowrap">${c.time}</td><td>${c.note}</td></tr>`;
+      });
+      html+=`</tbody></table></div>`;
+
+      html+=`<div class="cert-decisions"><div class="group-label" style="padding:6px 0">各認證決議</div>`;
+      certDecs.forEach(cd=>{
+        const d=S.cd[cd.id]||"";
+        html+=`<div class="cd-row">
+          <span class="cd-label">${cd.name}</span>
+          <div class="cd-btns">
+            <button class="cd-btn go ${d==='go'?'on':''}" onclick="setCd('${cd.id}','go')">Go</button>
+            <button class="cd-btn hold ${d==='hold'?'on':''}" onclick="setCd('${cd.id}','hold')">Hold</button>
+            <button class="cd-btn no ${d==='no'?'on':''}" onclick="setCd('${cd.id}','no')">No-Go</button>
+          </div>
+        </div>`;
+      });
+      html+=`</div>`;
+    }
+
+    // Topic note
+    const tn=S.tnotes[t.id]||"";
+    html+=`<div class="topic-note">
+      <button class="tn-toggle" onclick="toggleTNote('${t.id}')">${tn?'編輯本題筆記':'+ 本題綜合筆記'}</button>
+      <div class="tn-box" id="tn-${t.id}">
+        <textarea placeholder="本議題的綜合紀錄、決議、待辦..." oninput="saveTNote('${t.id}',this.value)">${esc(tn)}</textarea>
+      </div>
+      ${tn?`<div class="tn-preview">${esc(tn)}</div>`:''}
+    </div>`;
+
+    html+=`</div></div>`;
+  });
+
+  app.innerHTML = html;
+}
+
+// Actions
+function toggle(id){document.getElementById(id).classList.toggle("collapsed")}
+function expandAll(){document.querySelectorAll(".topic.collapsed").forEach(t=>t.classList.remove("collapsed"))}
+function collapseAll(){document.querySelectorAll(".topic").forEach(t=>t.classList.add("collapsed"))}
+
+function ckItem(id,v){S.ck[id]=v;save();render()}
+function setSt(tid,s){S.st[tid]=S.st[tid]===s?'':s;save();render()}
+function setCd(id,v){S.cd[id]=S.cd[id]===v?'':v;save();render()}
+function setCa(id,v){S.ca[id]=S.ca[id]===v?'':v;save();render()}
+
+function toggleItemNote(id){
+  const el=document.getElementById("ni-"+id);
+  el.classList.toggle("show");
+  if(el.classList.contains("show"))el.querySelector("textarea").focus();
+}
+function saveItemNote(id,v){
+  S.notes[id]=v;save();
+  const btn=document.querySelector(`#b-${id} .note-btn`);
+  if(btn){btn.className="note-btn"+(v?" has-note":"");btn.textContent=v?"筆記":"+ 備註"}
+  let nd=document.getElementById("nd-"+id);
+  if(v){if(!nd){nd=document.createElement("div");nd.id="nd-"+id;nd.className="note-display";document.getElementById("ni-"+id).parentElement.appendChild(nd)}nd.textContent=v}
+  else if(nd){nd.remove()}
+}
+
+function toggleTNote(tid){
+  const el=document.getElementById("tn-"+tid);
+  el.classList.toggle("show");
+  if(el.classList.contains("show"))el.querySelector("textarea").focus();
+}
+function saveTNote(tid,v){
+  S.tnotes[tid]=v;save();
+  const wrap=document.getElementById("tn-"+tid).parentElement;
+  let pv=wrap.querySelector(".tn-preview");
+  if(v){if(!pv){pv=document.createElement("div");pv.className="tn-preview";wrap.appendChild(pv)}pv.textContent=v}
+  else if(pv){pv.remove()}
+  wrap.querySelector(".tn-toggle").textContent=v?'編輯本題筆記':'+ 本題綜合筆記';
+}
+
+function esc(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML}
+
+// ============================================================
+// Export Report
+// ============================================================
+function genReport(){
+  const now = new Date();
+  const allItems = topics.flatMap(t=>t.groups.flatMap(g=>g.items));
+  const doneN = allItems.filter(i=>S.ck[i.id]).length;
+
+  let r = "";
+  r += "========================================================\n";
+  r += "  大豐 x 長虹  第一次外部會議紀錄\n";
+  r += "========================================================\n";
+  r += `會議日期：2026/03/18（三）下午 03:08\n`;
+  r += `確認進度：${doneN} / ${allItems.length} 項完成\n`;
+  r += `報告產出：${now.toLocaleDateString("zh-TW",{year:"numeric",month:"2-digit",day:"2-digit"})} ${now.toLocaleTimeString("zh-TW",{hour:"2-digit",minute:"2-digit"})}\n`;
+  r += "--------------------------------------------------------\n\n";
+
+  topics.forEach((t,ti)=>{
+    const st=S.st[t.id];
+    const stTag=st==='ok'?' [OK]':st==='pend'?' [待補]':st==='disc'?' [再議]':'';
+    r+=`【${ti+1}】${t.title}${stTag}\n`;
+
+    t.groups.forEach(g=>{
+      if(g.label) r+=`\n  ◆ ${g.label}\n`;
+      g.items.forEach(item=>{
+        const ck=S.ck[item.id]?"V":" ";
+        r+=`  [${ck}] ${item.text}\n`;
+        if(S.notes[item.id]) r+=`      → ${S.notes[item.id].replace(/\n/g,"\n      → ")}\n`;
+      });
+    });
+
+    if(t.isCert){
+      r+="\n  ◆ 認證決議\n";
+      r+=`    ${"認證".padEnd(18)}${"決議".padEnd(10)}申請方\n`;
+      r+=`    ${"-".repeat(45)}\n`;
+      certDecs.forEach((cd,ci)=>{
+        const d=S.cd[cd.id];
+        const dLabel=d==='go'?'GO':d==='hold'?'HOLD':d==='no'?'NO-GO':'未定';
+        const ca=S.ca[certData[ci]?.cid]||"";
+        const caLabel=ca==='df'?'大豐申請':ca==='ch'?'長虹申請':ca==='both'?'共同申請':'未定';
+        r+=`    ${cd.name}：${dLabel}　｜　${caLabel}\n`;
+      });
+    }
+
+    if(S.tnotes[t.id]){
+      r+=`\n  ◆ 綜合紀錄\n  ${S.tnotes[t.id].replace(/\n/g,"\n  ")}\n`;
+    }
+    r+="\n";
+  });
+
+  // Pending items
+  r+="========================================================\n";
+  r+="  待辦追蹤\n";
+  r+="========================================================\n\n";
+
+  let hasPending=false;
+  topics.forEach((t,ti)=>{
+    const pending=t.groups.flatMap(g=>g.items).filter(i=>!S.ck[i.id]);
+    if(pending.length){
+      if(!hasPending){hasPending=true}
+      r+=`【${ti+1}】${t.title}\n`;
+      pending.forEach(i=>{
+        r+=`  [ ] ${i.text}\n`;
+        if(S.notes[i.id]) r+=`      → ${S.notes[i.id].replace(/\n/g,"\n      → ")}\n`;
+      });
+      r+="\n";
+    }
+  });
+  if(!hasPending) r+="  全部項目已確認！\n\n";
+
+  r+="--------------------------------------------------------\n";
+  r+="以上為會議系統自動產出，請各與會者確認內容。\n";
+
+  return r;
+}
+
+function showExport(){
+  document.getElementById("reportContent").textContent = genReport();
+  document.getElementById("modalOverlay").classList.add("show");
+}
+function closeModal(){
+  document.getElementById("modalOverlay").classList.remove("show");
+}
+function copyReport(){
+  navigator.clipboard.writeText(genReport()).then(()=>{
+    const btn=document.querySelector(".modal-footer button:nth-child(2)");
+    btn.textContent="已複製！";setTimeout(()=>btn.textContent="複製到剪貼簿",1500);
+  });
+}
+function downloadReport(){
+  const blob=new Blob([genReport()],{type:"text/plain;charset=utf-8"});
+  const u=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=u;a.download=`大豐x長虹_會議紀錄_2026-03-18.txt`;
+  a.click();URL.revokeObjectURL(u);
+}
+
+function saveBackup(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json;charset=utf-8"});
+  const u=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=u;a.download=`會議紀錄備份_260318_${new Date().toISOString().slice(0,16).replace(/[T:]/g,'-')}.json`;
+  a.click();URL.revokeObjectURL(u);
+  const btns=document.querySelectorAll('.header-actions button');
+  btns[2].textContent="已儲存！";setTimeout(()=>btns[2].textContent="儲存備份",1500);
+}
+
+function loadBackup(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(data.ck!==undefined){
+        S={ck:data.ck||{},notes:data.notes||{},tnotes:data.tnotes||{},st:data.st||{},cd:data.cd||{},ca:data.ca||{}};
+        save();render();
+        alert("備份載入成功！共恢復 "+Object.keys(S.ck).filter(k=>S.ck[k]).length+" 項勾選、"+Object.keys(S.notes).filter(k=>S.notes[k]).length+" 則項目備註、"+Object.keys(S.tnotes).filter(k=>S.tnotes[k]).length+" 則議題筆記。");
+      }else{
+        alert("檔案格式不正確，請選擇正確的備份檔。");
+      }
+    }catch(err){
+      alert("檔案讀取失敗："+err.message);
+    }
+  };
+  reader.readAsText(file);
+  e.target.value="";
+}
+
+function clearAll(){
+  if(confirm("確定清除？")){localStorage.removeItem(SK);S=JSON.parse(JSON.stringify(DEFAULT_STATE));render()}
+}
+
+render();
+</script>
+</body>
+</html>
